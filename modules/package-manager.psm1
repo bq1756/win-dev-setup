@@ -123,7 +123,7 @@ function Install-PackageWinget {
     )
     
     # Build winget command arguments
-    $WINGET_ARGS = @("install", "--id", $package_name, "--silent", "--accept-source-agreements", "--accept-package-agreements")
+    $WINGET_ARGS = @("install", "--id", $package_name, "--source", "winget", "--silent", "--accept-source-agreements", "--accept-package-agreements")
     
     # Add version if specified and not "latest"
     if ($version -and $version -ne "latest") {
