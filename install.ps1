@@ -164,7 +164,7 @@ Write-LogInfo ""
 Write-LogInfo "Step 1: Validating prerequisites..."
 
 # Don't require admin for validation, but warn if not available
-$VALIDATION_RESULT = invoke_prerequisite_validation -require_admin:$false
+$VALIDATION_RESULT = Invoke-PrerequisiteValidation -require_admin:$false
 
 if (-not $VALIDATION_RESULT) {
     Write-LogError "Prerequisite validation failed. Please fix the issues above and try again."
@@ -189,7 +189,7 @@ if ($config_path) {
     Write-LogInfo "Loading custom configuration: $config_path"
     
     try {
-        $CUSTOM_CONFIG = load_yaml_config -config_path $config_path
+        $CUSTOM_CONFIG = Load-YamlConfig -config_path $config_path
         $CONFIGS_TO_LOAD += $CUSTOM_CONFIG
     }
     catch {
@@ -225,7 +225,7 @@ else {
     
     # Load configs for specified stacks
     try {
-        $STACK_CONFIGS = load_configs_from_directory -config_dir $DEFAULT_CONFIGS_DIR -stack_names $stacks
+        $STACK_CONFIGS = Load-ConfigsFromDirectory -config_dir $DEFAULT_CONFIGS_DIR -stack_names $stacks
         
         if ($STACK_CONFIGS.Count -eq 0) {
             Write-LogError "No valid configurations loaded for specified stacks"
@@ -249,7 +249,7 @@ Write-LogInfo "Step 3: Collecting packages to install..."
 $ALL_PACKAGES = @()
 
 foreach ($CONFIG in $CONFIGS_TO_LOAD) {
-    $ENABLED = get_enabled_packages -config $CONFIG
+    $ENABLED = Get-EnabledPackages -config $CONFIG
     
     if ($ENABLED.Count -gt 0) {
         Write-LogInfo "From $($CONFIG.source_file): $($ENABLED.Count) packages enabled"
@@ -271,7 +271,7 @@ Write-LogInfo "Step 4: Installing packages..."
 Write-LogInfo ""
 
 # Install all packages
-$INSTALL_RESULT = install_packages `
+$INSTALL_RESULT = Install-Packages `
     -packages $ALL_PACKAGES `
     -force:$force_installs `
     -whatif:$WhatIfPreference `

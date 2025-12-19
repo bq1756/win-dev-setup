@@ -82,8 +82,9 @@ Started: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 function Write-LogInfo {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
-        [string]$message
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [string]$message = ""
     )
     
     $TIMESTAMP = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
