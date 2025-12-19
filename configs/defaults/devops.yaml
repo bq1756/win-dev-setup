@@ -1,0 +1,119 @@
+# DevOps and Cloud Tools Stack
+# Tools for DevOps, cloud infrastructure, and operations
+
+packages:
+  # Azure CLI
+  - name: Microsoft.AzureCLI
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Azure Command-Line Interface"
+
+  # Azure PowerShell modules
+  - name: Az
+    install: true
+    version: latest
+    pkgmgr: pwsh
+    description: "Azure PowerShell module"
+
+  # Terraform (Infrastructure as Code)
+  - name: Hashicorp.Terraform
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Terraform infrastructure provisioning tool"
+
+  # Kubernetes CLI
+  - name: Kubernetes.kubectl
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Kubernetes command-line tool"
+
+  # Helm (Kubernetes package manager)
+  - name: Helm.Helm
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Helm - Kubernetes package manager"
+
+  # AWS CLI
+  - name: Amazon.AWSCLI
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "Amazon Web Services CLI"
+
+  # Google Cloud SDK
+  - name: Google.CloudSDK
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "Google Cloud SDK"
+
+  # VS Code extensions for DevOps
+  - name: ms-azure-devops.azure-pipelines
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Azure Pipelines support"
+
+  - name: hashicorp.terraform
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Terraform language support"
+
+  - name: ms-vscode.azurecli
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Azure CLI Tools"
+
+  - name: ms-azuretools.vscode-azureresourcegroups
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Azure Resources explorer"
+
+  # GitHub CLI
+  - name: GitHub.cli
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "GitHub command-line tool"
+
+  # Security and vulnerability scanning
+  - name: Snyk.Snyk
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "Snyk security vulnerability scanner"
+
+  # Postman (API testing)
+  - name: Postman.Postman
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Postman API development platform"
+
+  # Redis CLI and tools
+  - name: RedisInsight.RedisInsight
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "RedisInsight GUI for Redis"
+
+  # Database tools
+  - name: Microsoft.AzureDataStudio
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "Azure Data Studio (SQL, PostgreSQL, etc.)"
+
+  # Monitoring and observability
+  - name: Prometheus.Prometheus
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "Prometheus monitoring system"

@@ -1,0 +1,64 @@
+# Docker and Container Development Stack
+# Tools for container development including WSL, Docker Desktop, and related tools
+
+packages:
+  # WSL (Windows Subsystem for Linux)
+  # Note: WSL installation may require system restart
+  - name: Microsoft.WSL
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Windows Subsystem for Linux"
+
+  # Docker Desktop (includes Docker Engine, Docker Compose, Kubernetes)
+  - name: Docker.DockerDesktop
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Docker Desktop for Windows"
+
+  # VS Code extensions for Docker
+  - name: ms-azuretools.vscode-docker
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Docker support for VS Code"
+
+  - name: ms-vscode-remote.remote-containers
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Dev Containers - develop inside containers"
+
+  - name: ms-vscode-remote.remote-wsl
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "WSL extension for VS Code"
+
+  # Container registries
+  - name: ms-azuretools.vscode-azurecontainerapps
+    install: false
+    version: latest
+    pkgmgr: vscode
+    description: "Azure Container Apps support"
+
+  # Kubernetes support (if using Docker Desktop's Kubernetes)
+  - name: ms-kubernetes-tools.vscode-kubernetes-tools
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Kubernetes tools for VS Code"
+
+  # YAML support (for docker-compose.yaml, k8s manifests, etc.)
+  - name: redhat.vscode-yaml
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "YAML language support"
+
+# Note: After WSL is installed, you should:
+# 1. Restart your computer if prompted
+# 2. Install Ubuntu from Microsoft Store or via: wsl --install -d Ubuntu
+# 3. Configure Docker Desktop to use WSL2 backend
+# 4. Run install.ps1 inside WSL to install development tools in Linux

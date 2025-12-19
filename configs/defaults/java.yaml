@@ -1,0 +1,69 @@
+# Java Development Stack
+# Tools for Java development including JDK, build tools, and IDE support
+
+packages:
+  # Java Development Kit
+  - name: Oracle.JDK.21
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Oracle JDK 21 (LTS)"
+
+  # Alternative: Eclipse Temurin (Open Source JDK)
+  - name: EclipseAdoptium.Temurin.17.JDK
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "Eclipse Temurin JDK 17 (LTS, Open Source)"
+
+  # Build tools
+  - name: Apache.Maven
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Apache Maven build tool"
+
+  - name: Gradle.Gradle
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Gradle build automation tool"
+
+  # IDE - IntelliJ IDEA Community Edition
+  - name: JetBrains.IntelliJIDEA.Community
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "IntelliJ IDEA Community Edition"
+
+  # VS Code extensions for Java
+  - name: vscjava.vscode-java-pack
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Java Extension Pack for VS Code"
+
+  - name: vscjava.vscode-maven
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Maven support for VS Code"
+
+  - name: vscjava.vscode-gradle
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Gradle support for VS Code"
+
+  - name: redhat.java
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Language Support for Java by Red Hat"
+
+  # Spring Boot support
+  - name: vmware.vscode-spring-boot
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Spring Boot Extension Pack"

@@ -1,0 +1,55 @@
+# Python Development Stack
+# Tools for Python development including interpreter, package managers, and IDE support
+
+packages:
+  # Python interpreter
+  - name: Python.Python.3.12
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Python 3.12"
+
+  # VS Code extensions for Python
+  - name: ms-python.python
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Python language support for VS Code"
+
+  - name: ms-python.vscode-pylance
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Pylance - Python language server"
+
+  - name: ms-python.debugpy
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Python debugger"
+
+  # Jupyter support
+  - name: ms-toolsai.jupyter
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Jupyter notebook support"
+
+  # PyCharm Community Edition (alternative IDE)
+  - name: JetBrains.PyCharm.Community
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "PyCharm Community Edition IDE"
+
+  # Python linting and formatting tools (via pip)
+  # Note: These would typically be installed per-project or in virtual environments
+  # Disabled by default as they're better managed via requirements.txt
+  
+  # Alternative: Install common Python tools globally via PowerShell
+  # Uncomment if you want global installations
+  # - name: black
+  #   install: false
+  #   version: latest
+  #   pkgmgr: choco
+  #   description: "Python code formatter"

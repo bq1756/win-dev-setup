@@ -416,3 +416,15 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# win-dev-setup specific
+# Log files generated during installation
+*.log
+
+# User's custom configuration files (optional - remove this line if you want to commit custom configs)
+**/custom-*.yaml
+**/my-*.yaml
+
+# Test output and temporary files
+test-results/
+temp/

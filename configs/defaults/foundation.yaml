@@ -1,0 +1,78 @@
+# Foundation Development Stack
+# Core tools for any development environment
+# Includes: VS Code, Git, terminal tools, basic utilities
+
+packages:
+  # Version control
+  - name: Git.Git
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Distributed version control system"
+
+  # Code editor
+  - name: Microsoft.VisualStudioCode
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Visual Studio Code editor"
+
+  # VS Code extensions - essential
+  - name: ms-vscode.powershell
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "PowerShell language support"
+
+  - name: editorconfig.editorconfig
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "EditorConfig support"
+
+  - name: github.vscode-pull-request-github
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "GitHub Pull Requests and Issues"
+
+  # Modern terminal
+  - name: Microsoft.WindowsTerminal
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "Windows Terminal"
+
+  # PowerShell 7+
+  - name: Microsoft.PowerShell
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "PowerShell 7 (cross-platform)"
+
+  # Useful PowerShell modules
+  - name: powershell-yaml
+    install: true
+    version: latest
+    pkgmgr: pwsh
+    description: "YAML parser for PowerShell"
+
+  - name: posh-git
+    install: true
+    version: latest
+    pkgmgr: pwsh
+    description: "Git integration for PowerShell prompt"
+
+  # File comparison and merge tool
+  - name: WinMerge.WinMerge
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "File and folder comparison tool"
+
+  # Archive utilities
+  - name: 7zip.7zip
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: "File archiver with high compression ratio"

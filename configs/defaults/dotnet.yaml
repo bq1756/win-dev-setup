@@ -1,0 +1,68 @@
+# .NET Development Stack
+# Tools for .NET development including SDK, runtime, and tooling
+
+packages:
+  # .NET SDK (includes runtime)
+  - name: Microsoft.DotNet.SDK.8
+    install: true
+    version: latest
+    pkgmgr: winget
+    description: ".NET 8 SDK (LTS)"
+
+  # .NET 6 SDK (previous LTS - optional)
+  - name: Microsoft.DotNet.SDK.6
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: ".NET 6 SDK (LTS)"
+
+  # Visual Studio Community (full IDE)
+  - name: Microsoft.VisualStudio.2022.Community
+    install: false
+    version: latest
+    pkgmgr: winget
+    description: "Visual Studio 2022 Community Edition"
+
+  # VS Code extensions for .NET/C#
+  - name: ms-dotnettools.csharp
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "C# language support"
+
+  - name: ms-dotnettools.csdevkit
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "C# Dev Kit"
+
+  - name: ms-dotnettools.vscode-dotnet-runtime
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: ".NET Runtime installer"
+
+  # NuGet Package Manager
+  - name: jmrog.vscode-nuget-package-manager
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "NuGet Package Manager GUI"
+
+  # Entity Framework Core tools
+  # Note: EF Core tools are typically installed globally via dotnet tool
+  # This is handled better via: dotnet tool install --global dotnet-ef
+  
+  # ASP.NET Core development
+  - name: ms-azuretools.vscode-azurefunctions
+    install: false
+    version: latest
+    pkgmgr: vscode
+    description: "Azure Functions support (for serverless .NET)"
+
+  # Unit testing support
+  - name: formulahendry.dotnet-test-explorer
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: ".NET test explorer"
