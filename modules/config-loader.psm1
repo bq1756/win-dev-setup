@@ -52,7 +52,7 @@ function Install-YamlModule {
         $nugetProvider = Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue
         if (-not $nugetProvider) {
             Write-LogInfo "Installing NuGet package provider..."
-            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser | Out-Null
+            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser -Confirm:$false | Out-Null
         }
         
         if ($interactive) {
