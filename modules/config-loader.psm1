@@ -291,7 +291,7 @@ function Load-ConfigsFromDirectory {
         
         try {
             # Load configuration file
-            $CONFIG = Load-YamlConfig -config_path $FILE.FullName -interactive:$interactive -interactive:$interactive
+            $CONFIG = Load-YamlConfig -config_path $FILE.FullName -interactive:$interactive
             
             # Add metadata about source file
             $CONFIG | Add-Member -NotePropertyName "source_file" -NotePropertyValue $FILE.Name -Force
