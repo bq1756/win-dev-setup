@@ -39,7 +39,7 @@ $script:QUIET_MODE = $false
 .EXAMPLE
     initialize-logger -quiet
 #>
-function initialize-logger {
+function initialize_logger {
     [CmdletBinding()]
     param(
         [switch]$quiet
@@ -77,9 +77,9 @@ Started: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
     The message to log.
 
 .EXAMPLE
-    write-log-info "Starting installation process..."
+    write_log_info "Starting installation process..."
 #>
-function write-log-info {
+function write_log_info {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -106,9 +106,9 @@ function write-log-info {
     The message to log.
 
 .EXAMPLE
-    write-log-success "Package installed successfully: git"
+    write_log_success "Package installed successfully: git"
 #>
-function write-log-success {
+function write_log_success {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -135,9 +135,9 @@ function write-log-success {
     The message to log.
 
 .EXAMPLE
-    write-log-warning "Package not found in winget, trying chocolatey..."
+    write_log_warning "Package not found in winget, trying chocolatey..."
 #>
-function write-log-warning {
+function write_log_warning {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -164,9 +164,9 @@ function write-log-warning {
     The message to log.
 
 .EXAMPLE
-    write-log-error "Failed to install package: dotnet-sdk"
+    write_log_error "Failed to install package: dotnet-sdk"
 #>
-function write-log-error {
+function write_log_error {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -206,7 +206,7 @@ function write-log-error {
 .EXAMPLE
     write-log-package "git" "2.43.0" "Installing" "winget"
 #>
-function write-log-package {
+function write_log_package {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -258,17 +258,18 @@ function write-log-package {
 .EXAMPLE
     $LOG_PATH = get-log-path
 #>
-function get-log-path {
+function get_log_path {
     return $script:LOG_FILE_PATH
 }
 
 # Export module functions
 Export-ModuleMember -Function @(
-    'initialize-logger',
-    'write-log-info',
-    'write-log-success',
-    'write-log-warning',
-    'write-log-error',
-    'write-log-package',
-    'get-log-path'
+    'initialize_logger',
+    'write_log_info',
+    'write_log_success',
+    'write_log_warning',
+    'write_log_error',
+    'write_log_package',
+    'get_log_path'
 )
+

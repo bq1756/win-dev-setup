@@ -35,29 +35,29 @@ Import-Module (Join-Path $PSScriptRoot "validator.psm1") -Force
     $true if chocolatey is available after check/install, $false otherwise.
 
 .EXAMPLE
-    ensure-chocolatey-installed
+    ensure_chocolatey_installed
 #>
-function ensure-chocolatey-installed {
+function ensure_chocolatey_installed {
     [CmdletBinding()]
     param()
     
     # Check if choco command exists
-    if (test-command-exists "choco") {
-        write-log-success "Chocolatey is already installed"
+    if (test_command_exists "choco") {
+        write_log_success "Chocolatey is already installed"
         return $true
     }
     
-    write-log-info "Chocolatey not found. Installing..."
+    write_log_info "Chocolatey not found. Installing..."
     
     # Check if running as admin (required for chocolatey install)
-    if (-not (test-is-admin)) {
-        write-log-error "Administrator privileges required to install Chocolatey"
+    if (-not (test_is_admin)) {
+        write_log_error "Administrator privileges required to install Chocolatey"
         return $false
     }
     
     try {
         # Download and run chocolatey install script
-        write-log-info "Downloading Chocolatey installation script..."
+        write_log_info "Downloading Chocolatey installation script..."
         
         Set-ExecutionPolicy Bypass -Scope Process -Force
         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
@@ -68,17 +68,17 @@ function ensure-chocolatey-installed {
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
         
         # Verify installation
-        if (test-command-exists "choco") {
-            write-log-success "Chocolatey installed successfully"
+        if (test_command_exists "choco") {
+            write_log_success "Chocolatey installed successfully"
             return $true
         }
         else {
-            write-log-error "Chocolatey installation completed but command not found"
+            write_log_error "Chocolatey installation completed but command not found"
             return $false
         }
     }
     catch {
-        write-log-error "Failed to install Chocolatey: $_"
+        write_log_error "Failed to install Chocolatey: $_"
         return $false
     }
 }
@@ -107,9 +107,9 @@ function ensure-chocolatey-installed {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install-package-winget -package_name "Git.Git" -version "latest"
+    install_package_winget -package_name "Git.Git" -version "latest"
 #>
-function install-package-winget {
+function install_package_winget {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -137,33 +137,33 @@ function install-package-winget {
     
     # WhatIf mode - just show the command
     if ($whatif) {
-        write-log-info "[WHATIF] Would execute: winget $($WINGET_ARGS -join ' ')"
+        write_log_info "[WHATIF] Would execute: winget $($WINGET_ARGS -join ' ')"
         return $true
     }
     
-    write-log-package -package_name $package_name -version $version -status "Installing" -package_manager "winget"
+    write_log_package -package_name $package_name -version $version -status "Installing" -package_manager "winget"
     
     try {
         # Execute winget install
         $OUTPUT = & winget @WINGET_ARGS 2>&1
         
         if ($LASTEXITCODE -eq 0) {
-            write-log-package -package_name $package_name -version $version -status "Success" -package_manager "winget"
+            write_log_package -package_name $package_name -version $version -status "Success" -package_manager "winget"
             return $true
         }
         else {
             # Check if already installed
             if ($OUTPUT -match "already installed|No applicable update found") {
-                write-log-package -package_name $package_name -version $version -status "Already Installed" -package_manager "winget"
+                write_log_package -package_name $package_name -version $version -status "Already Installed" -package_manager "winget"
                 return $true
             }
             
-            write-log-error "Winget installation failed: $OUTPUT"
+            write_log_error "Winget installation failed: $OUTPUT"
             return $false
         }
     }
     catch {
-        write-log-error "Exception during winget installation: $_"
+        write_log_error "Exception during winget installation: $_"
         return $false
     }
 }
@@ -192,9 +192,9 @@ function install-package-winget {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install-package-choco -package_name "git" -version "latest"
+    install_package_choco -package_name "git" -version "latest"
 #>
-function install-package-choco {
+function install_package_choco {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -208,8 +208,8 @@ function install-package-choco {
     )
     
     # Ensure chocolatey is installed
-    if (-not (ensure-chocolatey-installed)) {
-        write-log-error "Cannot install package '$package_name' - Chocolatey not available"
+    if (-not (ensure_chocolatey_installed)) {
+        write_log_error "Cannot install package '$package_name' - Chocolatey not available"
         return $false
     }
     
@@ -228,27 +228,27 @@ function install-package-choco {
     
     # WhatIf mode
     if ($whatif) {
-        write-log-info "[WHATIF] Would execute: choco $($CHOCO_ARGS -join ' ')"
+        write_log_info "[WHATIF] Would execute: choco $($CHOCO_ARGS -join ' ')"
         return $true
     }
     
-    write-log-package -package_name $package_name -version $version -status "Installing" -package_manager "choco"
+    write_log_package -package_name $package_name -version $version -status "Installing" -package_manager "choco"
     
     try {
         # Execute chocolatey install
         $OUTPUT = & choco @CHOCO_ARGS 2>&1
         
         if ($LASTEXITCODE -eq 0) {
-            write-log-package -package_name $package_name -version $version -status "Success" -package_manager "choco"
+            write_log_package -package_name $package_name -version $version -status "Success" -package_manager "choco"
             return $true
         }
         else {
-            write-log-error "Chocolatey installation failed: $OUTPUT"
+            write_log_error "Chocolatey installation failed: $OUTPUT"
             return $false
         }
     }
     catch {
-        write-log-error "Exception during chocolatey installation: $_"
+        write_log_error "Exception during chocolatey installation: $_"
         return $false
     }
 }
@@ -277,9 +277,9 @@ function install-package-choco {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install-package-pwsh -package_name "Az" -version "latest"
+    install_package_pwsh -package_name "Az" -version "latest"
 #>
-function install-package-pwsh {
+function install_package_pwsh {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -294,18 +294,18 @@ function install-package-pwsh {
     
     # WhatIf mode
     if ($whatif) {
-        write-log-info "[WHATIF] Would install PowerShell module: $package_name (Version: $version)"
+        write_log_info "[WHATIF] Would install PowerShell module: $package_name (Version: $version)"
         return $true
     }
     
-    write-log-package -package_name $package_name -version $version -status "Installing" -package_manager "pwsh"
+    write_log_package -package_name $package_name -version $version -status "Installing" -package_manager "pwsh"
     
     try {
         # Check if module already exists
         $EXISTING_MODULE = Get-Module -ListAvailable -Name $package_name | Select-Object -First 1
         
         if ($EXISTING_MODULE -and -not $force) {
-            write-log-package -package_name $package_name -version $EXISTING_MODULE.Version -status "Already Installed" -package_manager "pwsh"
+            write_log_package -package_name $package_name -version $EXISTING_MODULE.Version -status "Already Installed" -package_manager "pwsh"
             return $true
         }
         
@@ -324,11 +324,11 @@ function install-package-pwsh {
         # Install module
         Install-Module @INSTALL_PARAMS -ErrorAction Stop
         
-        write-log-package -package_name $package_name -version $version -status "Success" -package_manager "pwsh"
+        write_log_package -package_name $package_name -version $version -status "Success" -package_manager "pwsh"
         return $true
     }
     catch {
-        write-log-error "Failed to install PowerShell module '$package_name': $_"
+        write_log_error "Failed to install PowerShell module '$package_name': $_"
         return $false
     }
 }
@@ -357,9 +357,9 @@ function install-package-pwsh {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install-package-vscode -package_name "ms-python.python"
+    install_package_vscode -package_name "ms-python.python"
 #>
-function install-package-vscode {
+function install_package_vscode {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -373,18 +373,18 @@ function install-package-vscode {
     )
     
     # Check if 'code' command is available
-    if (-not (test-command-exists "code")) {
-        write-log-error "VS Code CLI not found. Install VS Code first."
+    if (-not (test_command_exists "code")) {
+        write_log_error "VS Code CLI not found. Install VS Code first."
         return $false
     }
     
     # WhatIf mode
     if ($whatif) {
-        write-log-info "[WHATIF] Would install VS Code extension: $package_name"
+        write_log_info "[WHATIF] Would install VS Code extension: $package_name"
         return $true
     }
     
-    write-log-package -package_name $package_name -version "latest" -status "Installing" -package_manager "vscode"
+    write_log_package -package_name $package_name -version "latest" -status "Installing" -package_manager "vscode"
     
     try {
         # Build command arguments
@@ -398,16 +398,16 @@ function install-package-vscode {
         $OUTPUT = & code @CODE_ARGS 2>&1
         
         if ($LASTEXITCODE -eq 0 -or $OUTPUT -match "already installed") {
-            write-log-package -package_name $package_name -version "latest" -status "Success" -package_manager "vscode"
+            write_log_package -package_name $package_name -version "latest" -status "Success" -package_manager "vscode"
             return $true
         }
         else {
-            write-log-error "VS Code extension installation failed: $OUTPUT"
+            write_log_error "VS Code extension installation failed: $OUTPUT"
             return $false
         }
     }
     catch {
-        write-log-error "Exception during VS Code extension installation: $_"
+        write_log_error "Exception during VS Code extension installation: $_"
         return $false
     }
 }
@@ -439,9 +439,9 @@ function install-package-vscode {
 
 .EXAMPLE
     $pkg = @{ name = "git"; version = "2.43.0"; pkgmgr = "winget" }
-    install-package -package $pkg
+    install_package -package $pkg
 #>
-function install-package {
+function install_package {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -467,37 +467,37 @@ function install-package {
     switch ($package.pkgmgr) {
         "winget" {
             # Try winget first
-            $SUCCESS = install-package-winget -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            $SUCCESS = install_package_winget -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
             
             # If winget fails and we're not in whatif mode, try chocolatey as fallback
             if (-not $SUCCESS -and -not $whatif) {
-                write-log-warning "Winget installation failed for '$($package.name)', trying Chocolatey as fallback..."
-                $SUCCESS = install-package-choco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+                write_log_warning "Winget installation failed for '$($package.name)', trying Chocolatey as fallback..."
+                $SUCCESS = install_package_choco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
             }
             
             return $SUCCESS
         }
         
         "choco" {
-            return install-package-choco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            return install_package_choco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
         }
         
         "pwsh" {
-            return install-package-pwsh -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            return install_package_pwsh -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
         }
         
         "vscode" {
-            return install-package-vscode -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            return install_package_vscode -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
         }
         
         "apt" {
-            write-log-warning "APT package manager (for WSL/Ubuntu) should be run inside WSL environment"
-            write-log-info "Please log into WSL and run install.ps1 from there"
+            write_log_warning "APT package manager (for WSL/Ubuntu) should be run inside WSL environment"
+            write_log_info "Please log into WSL and run install.ps1 from there"
             return $false
         }
         
         default {
-            write-log-error "Unknown package manager: $($package.pkgmgr)"
+            write_log_error "Unknown package manager: $($package.pkgmgr)"
             return $false
         }
     }
@@ -529,10 +529,10 @@ function install-package {
     Hashtable with success_count and failure_count.
 
 .EXAMPLE
-    $result = install-packages -packages $package_list
+    $result = install_packages -packages $package_list
     Write-Host "Installed: $($result.success_count), Failed: $($result.failure_count)"
 #>
-function install-packages {
+function install_packages {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -547,20 +547,20 @@ function install-packages {
     $FAILURE_COUNT = 0
     $TOTAL_COUNT = $packages.Count
     
-    write-log-info "=========================================="
-    write-log-info "Starting package installation..."
-    write-log-info "Total packages to process: $TOTAL_COUNT"
-    write-log-info "=========================================="
+    write_log_info "=========================================="
+    write_log_info "Starting package installation..."
+    write_log_info "Total packages to process: $TOTAL_COUNT"
+    write_log_info "=========================================="
     
     $CURRENT = 0
     
     foreach ($PACKAGE in $packages) {
         $CURRENT++
         
-        write-log-info "[$CURRENT/$TOTAL_COUNT] Processing package: $($PACKAGE.name)"
+        write_log_info "[$CURRENT/$TOTAL_COUNT] Processing package: $($PACKAGE.name)"
         
         # Install the package
-        $RESULT = install-package -package $PACKAGE -force:$force -whatif:$whatif -latest_everything:$latest_everything
+        $RESULT = install_package -package $PACKAGE -force:$force -whatif:$whatif -latest_everything:$latest_everything
         
         if ($RESULT) {
             $SUCCESS_COUNT++
@@ -569,21 +569,21 @@ function install-packages {
             $FAILURE_COUNT++
         }
         
-        write-log-info "---"
+        write_log_info "---"
     }
     
-    write-log-info "=========================================="
-    write-log-success "Package installation complete!"
-    write-log-info "Successful: $SUCCESS_COUNT"
+    write_log_info "=========================================="
+    write_log_success "Package installation complete!"
+    write_log_info "Successful: $SUCCESS_COUNT"
     
     if ($FAILURE_COUNT -gt 0) {
-        write-log-warning "Failed: $FAILURE_COUNT"
+        write_log_warning "Failed: $FAILURE_COUNT"
     }
     else {
-        write-log-info "Failed: $FAILURE_COUNT"
+        write_log_info "Failed: $FAILURE_COUNT"
     }
     
-    write-log-info "=========================================="
+    write_log_info "=========================================="
     
     return @{
         success_count = $SUCCESS_COUNT
@@ -594,11 +594,12 @@ function install-packages {
 
 # Export module functions
 Export-ModuleMember -Function @(
-    'ensure-chocolatey-installed',
-    'install-package-winget',
-    'install-package-choco',
-    'install-package-pwsh',
-    'install-package-vscode',
-    'install-package',
-    'install-packages'
+    'ensure_chocolatey_installed',
+    'install_package_winget',
+    'install_package_choco',
+    'install_package_pwsh',
+    'install_package_vscode',
+    'install_package',
+    'install_packages'
 )
+

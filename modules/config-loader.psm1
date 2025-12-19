@@ -28,9 +28,9 @@ Import-Module (Join-Path $PSScriptRoot "logger.psm1") -Force
     This is required for YAML file parsing.
 
 .EXAMPLE
-    ensure-yaml-module
+    ensure_yaml_module
 #>
-function ensure-yaml-module {
+function ensure_yaml_module {
     [CmdletBinding()]
     param()
     
@@ -38,15 +38,15 @@ function ensure-yaml-module {
     $YAML_MODULE = Get-Module -ListAvailable -Name "powershell-yaml"
     
     if (-not $YAML_MODULE) {
-        write-log-info "PowerShell-Yaml module not found. Installing..."
+        write_log_info "PowerShell-Yaml module not found. Installing..."
         
         try {
             # Install from PowerShell Gallery
             Install-Module -Name powershell-yaml -Scope CurrentUser -Force -ErrorAction Stop
-            write-log-success "PowerShell-Yaml module installed successfully"
+            write_log_success "PowerShell-Yaml module installed successfully"
         }
         catch {
-            write-log-error "Failed to install PowerShell-Yaml module: $_"
+            write_log_error "Failed to install PowerShell-Yaml module: $_"
             throw
         }
     }
@@ -70,23 +70,23 @@ function ensure-yaml-module {
     Parsed configuration object containing package definitions.
 
 .EXAMPLE
-    $config = load-yaml-config -config_path "C:\configs\foundation.yaml"
+    $config = load_yaml_config -config_path "C:\configs\foundation.yaml"
 #>
-function load-yaml-config {
+function load_yaml_config {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
         [string]$config_path
     )
     
-    write-log-info "Loading configuration file: $config_path"
+    write_log_info "Loading configuration file: $config_path"
     
     # Ensure YAML module is available
-    ensure-yaml-module
+    ensure_yaml_module
     
     # Check if file exists
     if (-not (Test-Path -Path $config_path)) {
-        write-log-error "Configuration file not found: $config_path"
+        write_log_error "Configuration file not found: $config_path"
         throw "Configuration file not found: $config_path"
     }
     
@@ -106,12 +106,12 @@ function load-yaml-config {
             throw "Configuration file missing 'packages' section"
         }
         
-        write-log-success "Configuration loaded successfully: $($CONFIG.packages.Count) packages found"
+        write_log_success "Configuration loaded successfully: $($CONFIG.packages.Count) packages found"
         
         return $CONFIG
     }
     catch {
-        write-log-error "Failed to load configuration file: $_"
+        write_log_error "Failed to load configuration file: $_"
         throw
     }
 }
@@ -132,9 +132,9 @@ function load-yaml-config {
     $true if valid, $false otherwise.
 
 .EXAMPLE
-    $is_valid = validate-package-config -package $pkg
+    $is_valid = validate_package_config -package $pkg
 #>
-function validate-package-config {
+function validate_package_config {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -146,7 +146,7 @@ function validate-package-config {
     
     foreach ($FIELD in $REQUIRED_FIELDS) {
         if (-not $package.PSObject.Properties.Name.Contains($FIELD)) {
-            write-log-warning "Package configuration missing required field '$FIELD': $($package | ConvertTo-Json -Compress)"
+            write_log_warning "Package configuration missing required field '$FIELD': $($package | ConvertTo-Json -Compress)"
             return $false
         }
     }
@@ -154,13 +154,13 @@ function validate-package-config {
     # Validate package manager value
     $VALID_PKGMGRS = @('winget', 'choco', 'pwsh', 'vscode', 'apt')
     if ($package.pkgmgr -notin $VALID_PKGMGRS) {
-        write-log-warning "Invalid package manager '$($package.pkgmgr)' for package '$($package.name)'. Valid options: $($VALID_PKGMGRS -join ', ')"
+        write_log_warning "Invalid package manager '$($package.pkgmgr)' for package '$($package.name)'. Valid options: $($VALID_PKGMGRS -join ', ')"
         return $false
     }
     
     # Validate install field is boolean
     if ($package.install -isnot [bool]) {
-        write-log-warning "Package '$($package.name)' has invalid 'install' value. Must be true or false."
+        write_log_warning "Package '$($package.name)' has invalid 'install' value. Must be true or false."
         return $false
     }
     
@@ -182,9 +182,9 @@ function validate-package-config {
     Array of packages marked for installation.
 
 .EXAMPLE
-    $packages_to_install = get-enabled-packages -config $config
+    $packages_to_install = get_enabled_packages -config $config
 #>
-function get-enabled-packages {
+function get_enabled_packages {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -195,8 +195,8 @@ function get-enabled-packages {
     
     foreach ($PACKAGE in $config.packages) {
         # Validate package configuration
-        if (-not (validate-package-config -package $PACKAGE)) {
-            write-log-warning "Skipping invalid package configuration"
+        if (-not (validate_package_config -package $PACKAGE)) {
+            write_log_warning "Skipping invalid package configuration"
             continue
         }
         
@@ -205,11 +205,11 @@ function get-enabled-packages {
             $ENABLED_PACKAGES += $PACKAGE
         }
         else {
-            write-log-info "Package disabled in config: $($PACKAGE.name)"
+            write_log_info "Package disabled in config: $($PACKAGE.name)"
         }
     }
     
-    write-log-info "Found $($ENABLED_PACKAGES.Count) enabled packages out of $($config.packages.Count) total"
+    write_log_info "Found $($ENABLED_PACKAGES.Count) enabled packages out of $($config.packages.Count) total"
     
     return $ENABLED_PACKAGES
 }
@@ -237,7 +237,7 @@ function get-enabled-packages {
 .EXAMPLE
     $configs = load-configs-from-directory -config_dir "C:\configs\defaults" -stack_names @("foundation", "java")
 #>
-function load-configs-from-directory {
+function load_configs_from_directory {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -247,11 +247,11 @@ function load-configs-from-directory {
         [string[]]$stack_names
     )
     
-    write-log-info "Loading configurations from directory: $config_dir"
+    write_log_info "Loading configurations from directory: $config_dir"
     
     # Check if directory exists
     if (-not (Test-Path -Path $config_dir)) {
-        write-log-error "Configuration directory not found: $config_dir"
+        write_log_error "Configuration directory not found: $config_dir"
         throw "Configuration directory not found: $config_dir"
     }
     
@@ -259,7 +259,7 @@ function load-configs-from-directory {
     $YAML_FILES = Get-ChildItem -Path $config_dir -Filter "*.yaml" -File
     
     if ($YAML_FILES.Count -eq 0) {
-        write-log-warning "No YAML files found in directory: $config_dir"
+        write_log_warning "No YAML files found in directory: $config_dir"
         return @()
     }
     
@@ -270,14 +270,14 @@ function load-configs-from-directory {
         if ($stack_names) {
             $FILE_BASE_NAME = [System.IO.Path]::GetFileNameWithoutExtension($FILE.Name)
             if ($FILE_BASE_NAME -notin $stack_names) {
-                write-log-info "Skipping config file (not in requested stacks): $($FILE.Name)"
+                write_log_info "Skipping config file (not in requested stacks): $($FILE.Name)"
                 continue
             }
         }
         
         try {
             # Load configuration file
-            $CONFIG = load-yaml-config -config_path $FILE.FullName
+            $CONFIG = load_yaml_config -config_path $FILE.FullName
             
             # Add metadata about source file
             $CONFIG | Add-Member -NotePropertyName "source_file" -NotePropertyValue $FILE.Name -Force
@@ -285,21 +285,22 @@ function load-configs-from-directory {
             $CONFIGS += $CONFIG
         }
         catch {
-            write-log-error "Failed to load configuration file '$($FILE.Name)': $_"
+            write_log_error "Failed to load configuration file '$($FILE.Name)': $_"
             # Continue with other files even if one fails
         }
     }
     
-    write-log-info "Successfully loaded $($CONFIGS.Count) configuration files"
+    write_log_info "Successfully loaded $($CONFIGS.Count) configuration files"
     
     return $CONFIGS
 }
 
 # Export module functions
 Export-ModuleMember -Function @(
-    'ensure-yaml-module',
-    'load-yaml-config',
-    'validate-package-config',
-    'get-enabled-packages',
-    'load-configs-from-directory'
+    'ensure_yaml_module',
+    'load_yaml_config',
+    'validate_package_config',
+    'get_enabled_packages',
+    'load_configs_from_directory'
 )
+
