@@ -31,9 +31,9 @@ Import-Module (Join-Path $PSScriptRoot "logger.psm1") -Force
     $true if running as admin, $false otherwise.
 
 .EXAMPLE
-    if (test_is_admin) { Write-Host "Running as admin" }
+    if (Test-IsAdmin) { Write-Host "Running as admin" }
 #>
-function test_is_admin {
+function Test-IsAdmin {
     [CmdletBinding()]
     param()
     
@@ -62,9 +62,9 @@ function test_is_admin {
     $true if execution policy is acceptable, $false otherwise.
 
 .EXAMPLE
-    if (-not (test_execution_policy)) { exit 1 }
+    if (-not (Test-ExecutionPolicy)) { exit 1 }
 #>
-function test_execution_policy {
+function Test-ExecutionPolicy {
     [CmdletBinding()]
     param()
     
@@ -102,9 +102,9 @@ function test_execution_policy {
     $true if Windows version is supported, $false otherwise.
 
 .EXAMPLE
-    test_windows_version
+    Test-WindowsVersion
 #>
-function test_windows_version {
+function Test-WindowsVersion {
     [CmdletBinding()]
     param()
     
@@ -155,9 +155,9 @@ function test_windows_version {
     $true if command is available, $false otherwise.
 
 .EXAMPLE
-    if (test_command_exists "git") { Write-Host "Git is installed" }
+    if (Test-CommandExists "git") { Write-Host "Git is installed" }
 #>
-function test_command_exists {
+function Test-CommandExists {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -189,9 +189,9 @@ function test_command_exists {
     $true if winget is available, $false otherwise.
 
 .EXAMPLE
-    test_winget_available
+    Test-WingetAvailable
 #>
-function test_winget_available {
+function Test-WingetAvailable {
     [CmdletBinding()]
     param()
     
@@ -228,16 +228,16 @@ function test_winget_available {
     $true if WSL is installed, $false otherwise.
 
 .EXAMPLE
-    if (test_wsl_installed) { Write-Host "WSL is ready" }
+    if (Test-WslInstalled) { Write-Host "WSL is ready" }
 #>
-function test_wsl_installed {
+function Test-WslInstalled {
     [CmdletBinding()]
     param()
     
     Write-LogInfo "Checking for WSL (Windows Subsystem for Linux)..."
     
     # Check if wsl command exists
-    if (test_command_exists "wsl") {
+    if (Test-CommandExists "wsl") {
         # Try to run wsl --status to confirm it's functional
         try {
             $null = & wsl --status 2>&1
@@ -274,7 +274,7 @@ function test_wsl_installed {
 .EXAMPLE
     if (-not (invoke-prerequisite-validation -require_admin)) { exit 1 }
 #>
-function invoke_prerequisite_validation {
+function Invoke-PrerequisiteValidation {
     [CmdletBinding()]
     param(
         [switch]$require_admin
@@ -287,17 +287,17 @@ function invoke_prerequisite_validation {
     $ALL_PASSED = $true
     
     # Check Windows version
-    if (-not (test_windows_version)) {
+    if (-not (Test-WindowsVersion)) {
         $ALL_PASSED = $false
     }
     
     # Check execution policy
-    if (-not (test_execution_policy)) {
+    if (-not (Test-ExecutionPolicy)) {
         $ALL_PASSED = $false
     }
     
     # Check admin privileges
-    $IS_ADMIN = test_is_admin
+    $IS_ADMIN = Test-IsAdmin
     if ($require_admin -and -not $IS_ADMIN) {
         Write-LogError "Administrator privileges are required for this operation"
         Write-LogInfo "Please run PowerShell as Administrator and try again"
@@ -309,7 +309,7 @@ function invoke_prerequisite_validation {
     }
     
     # Check for winget (informational - not critical)
-    test_winget_available | Out-Null
+    Test-WingetAvailable | Out-Null
     
     Write-LogInfo "=========================================="
     

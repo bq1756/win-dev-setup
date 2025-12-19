@@ -28,9 +28,9 @@ Import-Module (Join-Path $PSScriptRoot "logger.psm1") -Force
     This is required for YAML file parsing.
 
 .EXAMPLE
-    ensure_yaml_module
+    Install-YamlModule
 #>
-function ensure_yaml_module {
+function Install-YamlModule {
     [CmdletBinding()]
     param()
     
@@ -70,9 +70,9 @@ function ensure_yaml_module {
     Parsed configuration object containing package definitions.
 
 .EXAMPLE
-    $config = load_yaml_config -config_path "C:\configs\foundation.yaml"
+    $config = Load-YamlConfig -config_path "C:\configs\foundation.yaml"
 #>
-function load_yaml_config {
+function Load-YamlConfig {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -82,7 +82,7 @@ function load_yaml_config {
     Write-LogInfo "Loading configuration file: $config_path"
     
     # Ensure YAML module is available
-    ensure_yaml_module
+    Install-YamlModule
     
     # Check if file exists
     if (-not (Test-Path -Path $config_path)) {
@@ -132,9 +132,9 @@ function load_yaml_config {
     $true if valid, $false otherwise.
 
 .EXAMPLE
-    $is_valid = validate_package_config -package $pkg
+    $is_valid = Test-PackageConfig -package $pkg
 #>
-function validate_package_config {
+function Test-PackageConfig {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -182,9 +182,9 @@ function validate_package_config {
     Array of packages marked for installation.
 
 .EXAMPLE
-    $packages_to_install = get_enabled_packages -config $config
+    $packages_to_install = Get-EnabledPackages -config $config
 #>
-function get_enabled_packages {
+function Get-EnabledPackages {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -195,7 +195,7 @@ function get_enabled_packages {
     
     foreach ($PACKAGE in $config.packages) {
         # Validate package configuration
-        if (-not (validate_package_config -package $PACKAGE)) {
+        if (-not (Test-PackageConfig -package $PACKAGE)) {
             Write-LogWarning "Skipping invalid package configuration"
             continue
         }
@@ -237,7 +237,7 @@ function get_enabled_packages {
 .EXAMPLE
     $configs = load-configs-from-directory -config_dir "C:\configs\defaults" -stack_names @("foundation", "java")
 #>
-function load_configs_from_directory {
+function Load-ConfigsFromDirectory {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -277,7 +277,7 @@ function load_configs_from_directory {
         
         try {
             # Load configuration file
-            $CONFIG = load_yaml_config -config_path $FILE.FullName
+            $CONFIG = Load-YamlConfig -config_path $FILE.FullName
             
             # Add metadata about source file
             $CONFIG | Add-Member -NotePropertyName "source_file" -NotePropertyValue $FILE.Name -Force

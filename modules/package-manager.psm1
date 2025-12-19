@@ -35,14 +35,14 @@ Import-Module (Join-Path $PSScriptRoot "validator.psm1") -Force
     $true if chocolatey is available after check/install, $false otherwise.
 
 .EXAMPLE
-    ensure_chocolatey_installed
+    Install-Chocolatey
 #>
-function ensure_chocolatey_installed {
+function Install-Chocolatey {
     [CmdletBinding()]
     param()
     
     # Check if choco command exists
-    if (test_command_exists "choco") {
+    if (Test-CommandExists "choco") {
         Write-LogSuccess "Chocolatey is already installed"
         return $true
     }
@@ -50,7 +50,7 @@ function ensure_chocolatey_installed {
     Write-LogInfo "Chocolatey not found. Installing..."
     
     # Check if running as admin (required for chocolatey install)
-    if (-not (test_is_admin)) {
+    if (-not (Test-IsAdmin)) {
         Write-LogError "Administrator privileges required to install Chocolatey"
         return $false
     }
@@ -68,7 +68,7 @@ function ensure_chocolatey_installed {
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
         
         # Verify installation
-        if (test_command_exists "choco") {
+        if (Test-CommandExists "choco") {
             Write-LogSuccess "Chocolatey installed successfully"
             return $true
         }
@@ -107,9 +107,9 @@ function ensure_chocolatey_installed {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install_package_winget -package_name "Git.Git" -version "latest"
+    Install-PackageWinget -package_name "Git.Git" -version "latest"
 #>
-function install_package_winget {
+function Install-PackageWinget {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -192,9 +192,9 @@ function install_package_winget {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install_package_choco -package_name "git" -version "latest"
+    Install-PackageChoco -package_name "git" -version "latest"
 #>
-function install_package_choco {
+function Install-PackageChoco {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -208,7 +208,7 @@ function install_package_choco {
     )
     
     # Ensure chocolatey is installed
-    if (-not (ensure_chocolatey_installed)) {
+    if (-not (Install-Chocolatey)) {
         Write-LogError "Cannot install package '$package_name' - Chocolatey not available"
         return $false
     }
@@ -277,9 +277,9 @@ function install_package_choco {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install_package_pwsh -package_name "Az" -version "latest"
+    Install-PackagePwsh -package_name "Az" -version "latest"
 #>
-function install_package_pwsh {
+function Install-PackagePwsh {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -357,9 +357,9 @@ function install_package_pwsh {
     $true if installation successful, $false otherwise.
 
 .EXAMPLE
-    install_package_vscode -package_name "ms-python.python"
+    Install-PackageVscode -package_name "ms-python.python"
 #>
-function install_package_vscode {
+function Install-PackageVscode {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -373,7 +373,7 @@ function install_package_vscode {
     )
     
     # Check if 'code' command is available
-    if (-not (test_command_exists "code")) {
+    if (-not (Test-CommandExists "code")) {
         Write-LogError "VS Code CLI not found. Install VS Code first."
         return $false
     }
@@ -439,9 +439,9 @@ function install_package_vscode {
 
 .EXAMPLE
     $pkg = @{ name = "git"; version = "2.43.0"; pkgmgr = "winget" }
-    install_package -package $pkg
+    Install-Package -package $pkg
 #>
-function install_package {
+function Install-Package {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -467,27 +467,27 @@ function install_package {
     switch ($package.pkgmgr) {
         "winget" {
             # Try winget first
-            $SUCCESS = install_package_winget -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            $SUCCESS = Install-PackageWinget -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
             
             # If winget fails and we're not in whatif mode, try chocolatey as fallback
             if (-not $SUCCESS -and -not $whatif) {
                 Write-LogWarning "Winget installation failed for '$($package.name)', trying Chocolatey as fallback..."
-                $SUCCESS = install_package_choco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+                $SUCCESS = Install-PackageChoco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
             }
             
             return $SUCCESS
         }
         
         "choco" {
-            return install_package_choco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            return Install-PackageChoco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
         }
         
         "pwsh" {
-            return install_package_pwsh -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            return Install-PackagePwsh -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
         }
         
         "vscode" {
-            return install_package_vscode -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+            return Install-PackageVscode -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
         }
         
         "apt" {
@@ -529,10 +529,10 @@ function install_package {
     Hashtable with success_count and failure_count.
 
 .EXAMPLE
-    $result = install_packages -packages $package_list
+    $result = Install-Packages -packages $package_list
     Write-Host "Installed: $($result.success_count), Failed: $($result.failure_count)"
 #>
-function install_packages {
+function Install-Packages {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -560,7 +560,7 @@ function install_packages {
         Write-LogInfo "[$CURRENT/$TOTAL_COUNT] Processing package: $($PACKAGE.name)"
         
         # Install the package
-        $RESULT = install_package -package $PACKAGE -force:$force -whatif:$whatif -latest_everything:$latest_everything
+        $RESULT = Install-Package -package $PACKAGE -force:$force -whatif:$whatif -latest_everything:$latest_everything
         
         if ($RESULT) {
             $SUCCESS_COUNT++
