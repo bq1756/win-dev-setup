@@ -118,11 +118,11 @@ try {
     Write-Host "Loaded package-manager.psm1" -ForegroundColor Green
     
     # Debug: Check if functions are available
-    $testFunc = Get-Command initialize_logger -ErrorAction SilentlyContinue
+    $testFunc = Get-Command Initialize-Logger -ErrorAction SilentlyContinue
     if ($testFunc) {
-        Write-Host "DEBUG: initialize_logger IS available" -ForegroundColor Yellow
+        Write-Host "DEBUG: Initialize-Logger IS available" -ForegroundColor Yellow
     } else {
-        Write-Host "DEBUG: initialize_logger NOT available" -ForegroundColor Red
+        Write-Host "DEBUG: Initialize-Logger NOT available" -ForegroundColor Red
         Write-Host "Available commands from logger:" -ForegroundColor Red
         Get-Command -Module logger | ForEach-Object { Write-Host "  - $($_.Name)" -ForegroundColor Red }
     }
@@ -134,47 +134,47 @@ catch {
 }
 
 # Initialize logging system
-initialize_logger -quiet:$quiet
+Initialize-Logger -quiet:$quiet
 
-write_log_info "=========================================="
-write_log_info "Windows Development Environment Setup"
-write_log_info "Version 1.0"
-write_log_info "=========================================="
+Write-LogInfo "=========================================="
+Write-LogInfo "Windows Development Environment Setup"
+Write-LogInfo "Version 1.0"
+Write-LogInfo "=========================================="
 
 # Log execution parameters
-write_log_info "Execution Mode: $(if ($WhatIfPreference) { 'DRY RUN (WhatIf)' } else { 'INSTALL' })"
+Write-LogInfo "Execution Mode: $(if ($WhatIfPreference) { 'DRY RUN (WhatIf)' } else { 'INSTALL' })"
 
 if ($stacks) {
-    write_log_info "Stacks requested: $($stacks -join ', ')"
+    Write-LogInfo "Stacks requested: $($stacks -join ', ')"
 }
 if ($config_path) {
-    write_log_info "Custom config: $config_path"
+    Write-LogInfo "Custom config: $config_path"
 }
 if ($force_installs) {
-    write_log_info "Force installs: ENABLED"
+    Write-LogInfo "Force installs: ENABLED"
 }
 if ($latest_everything) {
-    write_log_info "Latest everything: ENABLED"
+    Write-LogInfo "Latest everything: ENABLED"
 }
 
-write_log_info "Log file: $(get_log_path)"
-write_log_info ""
+Write-LogInfo "Log file: $(Get-LogPath)"
+Write-LogInfo ""
 
 # Step 1: Run prerequisite validation
-write_log_info "Step 1: Validating prerequisites..."
+Write-LogInfo "Step 1: Validating prerequisites..."
 
 # Don't require admin for validation, but warn if not available
 $VALIDATION_RESULT = invoke_prerequisite_validation -require_admin:$false
 
 if (-not $VALIDATION_RESULT) {
-    write_log_error "Prerequisite validation failed. Please fix the issues above and try again."
+    Write-LogError "Prerequisite validation failed. Please fix the issues above and try again."
     exit 1
 }
 
-write_log_info ""
+Write-LogInfo ""
 
 # Step 2: Determine what to install
-write_log_info "Step 2: Loading configuration..."
+Write-LogInfo "Step 2: Loading configuration..."
 
 # Configuration list to process
 $CONFIGS_TO_LOAD = @()
@@ -182,18 +182,18 @@ $CONFIGS_TO_LOAD = @()
 if ($config_path) {
     # Custom config file specified
     if (-not (Test-Path $config_path)) {
-        write_log_error "Custom configuration file not found: $config_path"
+        Write-LogError "Custom configuration file not found: $config_path"
         exit 1
     }
     
-    write_log_info "Loading custom configuration: $config_path"
+    Write-LogInfo "Loading custom configuration: $config_path"
     
     try {
         $CUSTOM_CONFIG = load_yaml_config -config_path $config_path
         $CONFIGS_TO_LOAD += $CUSTOM_CONFIG
     }
     catch {
-        write_log_error "Failed to load custom configuration: $_"
+        Write-LogError "Failed to load custom configuration: $_"
         exit 1
     }
 }
@@ -202,24 +202,24 @@ else {
     $DEFAULT_CONFIGS_DIR = Join-Path $SCRIPT_DIR "configs\defaults"
     
     if (-not (Test-Path $DEFAULT_CONFIGS_DIR)) {
-        write_log_error "Default configurations directory not found: $DEFAULT_CONFIGS_DIR"
-        write_log_info "Expected location: configs/defaults/"
+        Write-LogError "Default configurations directory not found: $DEFAULT_CONFIGS_DIR"
+        Write-LogInfo "Expected location: configs/defaults/"
         exit 1
     }
     
     # If no stacks specified, show available stacks and exit
     if (-not $stacks) {
-        write_log_warning "No stacks specified. Please use -stacks parameter."
-        write_log_info ""
-        write_log_info "Available stacks:"
-        write_log_info "  foundation - VS Code, Git, basic development tools"
-        write_log_info "  java       - JDK, Maven, Gradle"
-        write_log_info "  python     - Python, pip, common packages"
-        write_log_info "  dotnet     - .NET SDK and tools"
-        write_log_info "  docker     - WSL, Docker Desktop, container tools"
-        write_log_info "  devops     - Azure CLI, Kubernetes, Terraform"
-        write_log_info ""
-        write_log_info "Example: .\install.ps1 -stacks foundation,python"
+        Write-LogWarning "No stacks specified. Please use -stacks parameter."
+        Write-LogInfo ""
+        Write-LogInfo "Available stacks:"
+        Write-LogInfo "  foundation - VS Code, Git, basic development tools"
+        Write-LogInfo "  java       - JDK, Maven, Gradle"
+        Write-LogInfo "  python     - Python, pip, common packages"
+        Write-LogInfo "  dotnet     - .NET SDK and tools"
+        Write-LogInfo "  docker     - WSL, Docker Desktop, container tools"
+        Write-LogInfo "  devops     - Azure CLI, Kubernetes, Terraform"
+        Write-LogInfo ""
+        Write-LogInfo "Example: .\install.ps1 -stacks foundation,python"
         exit 0
     }
     
@@ -228,23 +228,23 @@ else {
         $STACK_CONFIGS = load_configs_from_directory -config_dir $DEFAULT_CONFIGS_DIR -stack_names $stacks
         
         if ($STACK_CONFIGS.Count -eq 0) {
-            write_log_error "No valid configurations loaded for specified stacks"
+            Write-LogError "No valid configurations loaded for specified stacks"
             exit 1
         }
         
         $CONFIGS_TO_LOAD = $STACK_CONFIGS
     }
     catch {
-        write_log_error "Failed to load stack configurations: $_"
+        Write-LogError "Failed to load stack configurations: $_"
         exit 1
     }
 }
 
-write_log_info "Loaded $($CONFIGS_TO_LOAD.Count) configuration file(s)"
-write_log_info ""
+Write-LogInfo "Loaded $($CONFIGS_TO_LOAD.Count) configuration file(s)"
+Write-LogInfo ""
 
 # Step 3: Collect all enabled packages
-write_log_info "Step 3: Collecting packages to install..."
+Write-LogInfo "Step 3: Collecting packages to install..."
 
 $ALL_PACKAGES = @()
 
@@ -252,23 +252,23 @@ foreach ($CONFIG in $CONFIGS_TO_LOAD) {
     $ENABLED = get_enabled_packages -config $CONFIG
     
     if ($ENABLED.Count -gt 0) {
-        write_log_info "From $($CONFIG.source_file): $($ENABLED.Count) packages enabled"
+        Write-LogInfo "From $($CONFIG.source_file): $($ENABLED.Count) packages enabled"
         $ALL_PACKAGES += $ENABLED
     }
 }
 
 if ($ALL_PACKAGES.Count -eq 0) {
-    write_log_warning "No packages enabled for installation. Check your configuration files."
-    write_log_info "Make sure packages have 'install: true' in the YAML files."
+    Write-LogWarning "No packages enabled for installation. Check your configuration files."
+    Write-LogInfo "Make sure packages have 'install: true' in the YAML files."
     exit 0
 }
 
-write_log_info "Total packages to install: $($ALL_PACKAGES.Count)"
-write_log_info ""
+Write-LogInfo "Total packages to install: $($ALL_PACKAGES.Count)"
+Write-LogInfo ""
 
 # Step 4: Install packages
-write_log_info "Step 4: Installing packages..."
-write_log_info ""
+Write-LogInfo "Step 4: Installing packages..."
+Write-LogInfo ""
 
 # Install all packages
 $INSTALL_RESULT = install_packages `
@@ -277,55 +277,55 @@ $INSTALL_RESULT = install_packages `
     -whatif:$WhatIfPreference `
     -latest_everything:$latest_everything
 
-write_log_info ""
+Write-LogInfo ""
 
 # Step 5: Summary and next steps
-write_log_info "=========================================="
-write_log_info "Installation Summary"
-write_log_info "=========================================="
-write_log_info "Total packages processed: $($INSTALL_RESULT.total_count)"
-write_log_success "Successfully installed: $($INSTALL_RESULT.success_count)"
+Write-LogInfo "=========================================="
+Write-LogInfo "Installation Summary"
+Write-LogInfo "=========================================="
+Write-LogInfo "Total packages processed: $($INSTALL_RESULT.total_count)"
+Write-LogSuccess "Successfully installed: $($INSTALL_RESULT.success_count)"
 
 if ($INSTALL_RESULT.failure_count -gt 0) {
-    write_log_warning "Failed installations: $($INSTALL_RESULT.failure_count)"
-    write_log_info "Check the log file for details: $(get_log_path)"
+    Write-LogWarning "Failed installations: $($INSTALL_RESULT.failure_count)"
+    Write-LogInfo "Check the log file for details: $(Get-LogPath)"
 }
 else {
-    write_log_info "Failed installations: 0"
+    Write-LogInfo "Failed installations: 0"
 }
 
-write_log_info ""
+Write-LogInfo ""
 
 # Provide next steps guidance
 if (-not $WhatIfPreference) {
-    write_log_info "=========================================="
-    write_log_info "Next Steps"
-    write_log_info "=========================================="
+    Write-LogInfo "=========================================="
+    Write-LogInfo "Next Steps"
+    Write-LogInfo "=========================================="
     
     # Check if docker/WSL was in the stacks
     if ($stacks -contains "docker") {
-        write_log_info "WSL/Docker Setup:"
-        write_log_info "  1. WSL may require a system restart to complete installation"
-        write_log_info "  2. After restart, configure Docker Desktop settings"
-        write_log_info "  3. To install tools inside WSL Ubuntu, open WSL and run:"
-        write_log_info "     cd /mnt/c/Users/$env:USERNAME/repos/win-dev-setup"
-        write_log_info "     pwsh ./install.ps1 -stacks <your-stacks>"
-        write_log_info ""
+        Write-LogInfo "WSL/Docker Setup:"
+        Write-LogInfo "  1. WSL may require a system restart to complete installation"
+        Write-LogInfo "  2. After restart, configure Docker Desktop settings"
+        Write-LogInfo "  3. To install tools inside WSL Ubuntu, open WSL and run:"
+        Write-LogInfo "     cd /mnt/c/Users/$env:USERNAME/repos/win-dev-setup"
+        Write-LogInfo "     pwsh ./install.ps1 -stacks <your-stacks>"
+        Write-LogInfo ""
     }
     
-    write_log_info "General:"
-    write_log_info "  - You may need to restart your terminal or computer for all changes to take effect"
-    write_log_info "  - Some tools may require additional configuration"
-    write_log_info "  - Check tool documentation for post-install setup"
-    write_log_info ""
+    Write-LogInfo "General:"
+    Write-LogInfo "  - You may need to restart your terminal or computer for all changes to take effect"
+    Write-LogInfo "  - Some tools may require additional configuration"
+    Write-LogInfo "  - Check tool documentation for post-install setup"
+    Write-LogInfo ""
     
-    write_log_info "Log file saved to: $(get_log_path)"
-    write_log_info ""
+    Write-LogInfo "Log file saved to: $(Get-LogPath)"
+    Write-LogInfo ""
 }
 
-write_log_info "=========================================="
-write_log_success "Script execution completed!"
-write_log_info "=========================================="
+Write-LogInfo "=========================================="
+Write-LogSuccess "Script execution completed!"
+Write-LogInfo "=========================================="
 
 # Exit with appropriate code
 if ($INSTALL_RESULT.failure_count -gt 0 -and -not $WhatIfPreference) {
@@ -334,4 +334,5 @@ if ($INSTALL_RESULT.failure_count -gt 0 -and -not $WhatIfPreference) {
 else {
     exit 0
 }
+
 

@@ -262,16 +262,15 @@ function get_log_path {
     return $script:LOG_FILE_PATH
 }
 
-# Create PowerShell-compliant aliases with hyphens for all functions
-New-Alias -Name Initialize-Logger -Value initialize_logger -Force
-New-Alias -Name Write-LogInfo -Value write_log_info -Force
-New-Alias -Name Write-LogSuccess -Value write_log_success -Force
-New-Alias -Name Write-LogWarning -Value write_log_warning -Force
-New-Alias -Name Write-LogError -Value write_log_error -Force
-New-Alias -Name Write-LogPackage -Value write_log_package -Force
-New-Alias -Name Get-LogPath -Value get_log_path -Force
+# PowerShell-compliant wrapper functions (Verb-Noun naming with hyphens)
+function Initialize-Logger { param([switch]$quiet) initialize_logger -quiet:$quiet }
+function Write-LogInfo { param([string]$message) write_log_info $message }
+function Write-LogSuccess { param([string]$message) write_log_success $message }
+function Write-LogWarning { param([string]$message) write_log_warning $message }
+function Write-LogError { param([string]$message) write_log_error $message }
+function Write-LogPackage { param([string]$pkgmgr, [string]$package_name, [string]$status) write_log_package -pkgmgr $pkgmgr -package_name $package_name -status $status }
+function Get-LogPath { get_log_path }
 
-# Export all functions AND aliases
-Export-ModuleMember -Function initialize_logger, write_log_info, write_log_success, write_log_warning, write_log_error, write_log_package, get_log_path
-Export-ModuleMember -Alias Initialize-Logger, Write-LogInfo, Write-LogSuccess, Write-LogWarning, Write-LogError, Write-LogPackage, Get-LogPath
+# Export wrapper functions (PowerShell naming convention compliant)
+Export-ModuleMember -Function Initialize-Logger, Write-LogInfo, Write-LogSuccess, Write-LogWarning, Write-LogError, Write-LogPackage, Get-LogPath
 
