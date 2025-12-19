@@ -27,32 +27,39 @@ Import-Module (Join-Path $PSScriptRoot "logger.psm1") -Force
     Checks if powershell-yaml module is available and installs it if missing.
     This is required for YAML file parsing.
 
+.PARAMETER interactive
+    If specified, allows prompts during module installation.
+
 .EXAMPLE
     Install-YamlModule
 #>
 function Install-YamlModule {
     [CmdletBinding()]
-    param()
+    param(
+        [switch]$interactive
+    )
     
-    # Check if powershell-yaml module is installed
-    $YAML_MODULE = Get-Module -ListAvailable -Name "powershell-yaml"
-    
-    if (-not $YAML_MODULE) {
-        Write-LogInfo "PowerShell-Yaml module not found. Installing..."
-        
-        try {
-            # Install from PowerShell Gallery
-            Install-Module -Name powershell-yaml -Scope CurrentUser -Force -ErrorAction Stop
-            Write-LogSuccess "PowerShell-Yaml module installed successfully"
-        }
-        catch {
-            Write-LogError "Failed to install PowerShell-Yaml module: $_"
-            throw
-        }
+    # Check if powershell-yaml module is already installed
+    if (Get-Module -ListAvailable -Name powershell-yaml) {
+        Import-Module powershell-yaml -ErrorAction Stop
+        return
     }
     
-    # Import the module
-    Import-Module powershell-yaml -Force
+    Write-LogInfo "PowerShell-Yaml module not found. Installing..."
+    
+    try {
+        if ($interactive) {
+            Install-Module -Name powershell-yaml -Scope CurrentUser -ErrorAction Stop
+        } else {
+            Install-Module -Name powershell-yaml -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
+        }
+        Import-Module powershell-yaml -ErrorAction Stop
+        Write-LogSuccess "PowerShell-Yaml module installed successfully"
+    }
+    catch {
+        Write-LogError "Failed to install powershell-yaml module: $_"
+        throw
+    }
 }
 
 <#
