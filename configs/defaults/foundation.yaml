@@ -67,7 +67,9 @@ packages:
     pkgmgr: pwsh
     description: "Git integration for PowerShell prompt"
 
-  # choco_name: winmerge
+  # File comparison and merge tool
+  - name: WinMerge.WinMerge
+    choco_name: winmerge
     install: true
     version: latest
     pkgmgr: winget
@@ -75,9 +77,7 @@ packages:
 
   # Archive utilities
   - name: 7zip.7zip
-    choco_name: 
-  # Archive utilities
-  - name: 7zip.7zip
+    choco_name: 7zip
     install: true
     version: latest
     pkgmgr: winget
