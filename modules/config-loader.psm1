@@ -277,6 +277,7 @@ function Load-ConfigsFromDirectory {
         
         try {
             # Load configuration file
+            Write-LogInfo "Processing config file: $($FILE.Name)"
             $CONFIG = Load-YamlConfig -config_path $FILE.FullName
             
             # Add metadata about source file

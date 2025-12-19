@@ -227,16 +227,22 @@ else {
     try {
         $STACK_CONFIGS = Load-ConfigsFromDirectory -config_dir $DEFAULT_CONFIGS_DIR -stack_names $stacks
         
-        if ($STACK_CONFIGS.Count -eq 0) {
-            Write-LogError "No valid configurations loaded for specified stacks"
-            exit 1
+        if (-not $STACK_CONFIGS -or $STACK_CONFIGS.Count -eq 0) {
+            Write-LogWarning "No valid configurations loaded for specified stacks: $($stacks -join ', ')"
+            Write-LogInfo "Available config files in $DEFAULT_CONFIGS_DIR"
+            Get-ChildItem -Path $DEFAULT_CONFIGS_DIR -Filter "*.yaml" | ForEach-Object {
+                Write-LogInfo "  - $($_.Name)"
+            }
+            $CONFIGS_TO_LOAD = @()
         }
-        
-        $CONFIGS_TO_LOAD = $STACK_CONFIGS
+        else {
+            $CONFIGS_TO_LOAD = $STACK_CONFIGS
+        }
     }
     catch {
-        Write-LogError "Failed to load stack configurations: $_"
-        exit 1
+        Write-LogError "Failed to load stack configurations: $($_.Exception.Message)"
+        Write-LogWarning "Continuing with empty configuration list"
+        $CONFIGS_TO_LOAD = @()
     }
 }
 
