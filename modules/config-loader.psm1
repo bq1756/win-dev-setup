@@ -48,6 +48,13 @@ function Install-YamlModule {
     Write-LogInfo "PowerShell-Yaml module not found. Installing..."
     
     try {
+        # Ensure NuGet provider is installed (required for Install-Module)
+        $nugetProvider = Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue
+        if (-not $nugetProvider) {
+            Write-LogInfo "Installing NuGet package provider..."
+            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser | Out-Null
+        }
+        
         if ($interactive) {
             Install-Module -Name powershell-yaml -Scope CurrentUser -ErrorAction Stop
         } else {
