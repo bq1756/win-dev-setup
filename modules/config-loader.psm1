@@ -267,8 +267,12 @@ function Load-ConfigsFromDirectory {
         throw "Configuration directory not found: $config_dir"
     }
     
+    Write-LogInfo "Searching for YAML files in: $config_dir"
+    
     # Get all YAML files in directory
     $YAML_FILES = Get-ChildItem -Path $config_dir -Filter "*.yaml" -File
+    
+    Write-LogInfo "Found $($YAML_FILES.Count) YAML file(s)"
     
     if ($YAML_FILES.Count -eq 0) {
         Write-LogWarning "No YAML files found in directory: $config_dir"
