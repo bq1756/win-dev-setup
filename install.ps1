@@ -116,16 +116,6 @@ try {
     
     Import-Module (Join-Path $MODULES_DIR "package-manager.psm1") -Force -ErrorAction Stop
     Write-Host "Loaded package-manager.psm1" -ForegroundColor Green
-    
-    # Debug: Check if functions are available
-    $testFunc = Get-Command Initialize-Logger -ErrorAction SilentlyContinue
-    if ($testFunc) {
-        Write-Host "DEBUG: Initialize-Logger IS available" -ForegroundColor Yellow
-    } else {
-        Write-Host "DEBUG: Initialize-Logger NOT available" -ForegroundColor Red
-        Write-Host "Available commands from logger:" -ForegroundColor Red
-        Get-Command -Module logger | ForEach-Object { Write-Host "  - $($_.Name)" -ForegroundColor Red }
-    }
 }
 catch {
     Write-Host "ERROR: Failed to import modules: $_" -ForegroundColor Red
@@ -200,8 +190,6 @@ if ($config_path) {
 else {
     # Use default configs based on stack selection
     $DEFAULT_CONFIGS_DIR = Join-Path $SCRIPT_DIR "configs\defaults"
-    
-    Write-LogInfo "Default config directory: $DEFAULT_CONFIGS_DIR"
     
     if (-not (Test-Path $DEFAULT_CONFIGS_DIR)) {
         Write-LogError "Default configurations directory not found: $DEFAULT_CONFIGS_DIR"

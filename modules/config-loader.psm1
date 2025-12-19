@@ -82,13 +82,7 @@ function Load-YamlConfig {
     Write-LogInfo "Loading configuration file: $config_path"
     
     # Ensure YAML module is available
-    try {
-        Install-YamlModule
-    }
-    catch {
-        Write-LogError "Failed to install YAML module: $($_.Exception.Message)"
-        throw
-    }
+    Install-YamlModule
     
     # Check if file exists
     if (-not (Test-Path -Path $config_path)) {
@@ -97,16 +91,13 @@ function Load-YamlConfig {
     }
     
     try {
-        # Read file content
-        Write-LogInfo "Reading file: $config_path"
+        # Read and parse YAML file
         $YAML_CONTENT = Get-Content -Path $config_path -Raw -ErrorAction Stop
         
         if (-not $YAML_CONTENT) {
             throw "Configuration file is empty: $config_path"
         }
         
-        # Parse YAML to PowerShell object
-        Write-LogInfo "Parsing YAML content..."
         $CONFIG = ConvertFrom-Yaml -Yaml $YAML_CONTENT -ErrorAction Stop
         
         # Validate basic structure
@@ -267,12 +258,8 @@ function Load-ConfigsFromDirectory {
         throw "Configuration directory not found: $config_dir"
     }
     
-    Write-LogInfo "Searching for YAML files in: $config_dir"
-    
     # Get all YAML files in directory
     $YAML_FILES = Get-ChildItem -Path $config_dir -Filter "*.yaml" -File
-    
-    Write-LogInfo "Found $($YAML_FILES.Count) YAML file(s)"
     
     if ($YAML_FILES.Count -eq 0) {
         Write-LogWarning "No YAML files found in directory: $config_dir"
@@ -293,7 +280,6 @@ function Load-ConfigsFromDirectory {
         
         try {
             # Load configuration file
-            Write-LogInfo "Processing config file: $($FILE.Name)"
             $CONFIG = Load-YamlConfig -config_path $FILE.FullName
             
             # Add metadata about source file
