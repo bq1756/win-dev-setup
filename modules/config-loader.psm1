@@ -76,13 +76,15 @@ function Load-YamlConfig {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
-        [string]$config_path
+        [string]$config_path,
+        
+        [switch]$interactive
     )
     
     Write-LogInfo "Loading configuration file: $config_path"
     
     # Ensure YAML module is available
-    Install-YamlModule
+    Install-YamlModule -interactive:$interactive
     
     # Check if file exists
     if (-not (Test-Path -Path $config_path)) {
@@ -247,7 +249,9 @@ function Load-ConfigsFromDirectory {
         [string]$config_dir,
         
         [Parameter(Mandatory = $false)]
-        [string[]]$stack_names
+        [string[]]$stack_names,
+        
+        [switch]$interactive
     )
     
     Write-LogInfo "Loading configurations from directory: $config_dir"
@@ -280,7 +284,7 @@ function Load-ConfigsFromDirectory {
         
         try {
             # Load configuration file
-            $CONFIG = Load-YamlConfig -config_path $FILE.FullName
+            $CONFIG = Load-YamlConfig -config_path $FILE.FullName -interactive:$interactive -interactive:$interactive
             
             # Add metadata about source file
             $CONFIG | Add-Member -NotePropertyName "source_file" -NotePropertyValue $FILE.Name -Force

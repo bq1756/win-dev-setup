@@ -92,6 +92,7 @@ param(
     
     [switch]$force_installs,
     [switch]$latest_everything,
+    [switch]$interactive,
     [switch]$quiet
 )
 
@@ -179,7 +180,7 @@ if ($config_path) {
     Write-LogInfo "Loading custom configuration: $config_path"
     
     try {
-        $CUSTOM_CONFIG = Load-YamlConfig -config_path $config_path
+        $CUSTOM_CONFIG = Load-YamlConfig -config_path $config_path -interactive:$interactive
         $CONFIGS_TO_LOAD += $CUSTOM_CONFIG
     }
     catch {
@@ -215,7 +216,7 @@ else {
     
     # Load configs for specified stacks
     try {
-        $STACK_CONFIGS = Load-ConfigsFromDirectory -config_dir $DEFAULT_CONFIGS_DIR -stack_names $stacks
+        $STACK_CONFIGS = Load-ConfigsFromDirectory -config_dir $DEFAULT_CONFIGS_DIR -stack_names $stacks -interactive:$interactive
         
         if (-not $STACK_CONFIGS -or $STACK_CONFIGS.Count -eq 0) {
             Write-LogWarning "No valid configurations loaded for specified stacks: $($stacks -join ', ')"

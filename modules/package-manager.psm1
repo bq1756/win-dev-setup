@@ -311,9 +311,11 @@ function Install-PackagePwsh {
         
         # Build install parameters
         $INSTALL_PARAMS = @{
-            Name  = $package_name
-            Scope = "CurrentUser"
-            Force = $force
+            Name              = $package_name
+            Scope             = "CurrentUser"
+            Force             = $true
+            AllowClobber      = $true
+            SkipPublisherCheck = $true
         }
         
         # Add version if specified and not "latest"
