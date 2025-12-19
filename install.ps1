@@ -92,7 +92,6 @@ param(
     
     [switch]$force_installs,
     [switch]$latest_everything,
-    [switch]$whatif,
     [switch]$quiet
 )
 
@@ -117,7 +116,7 @@ write-log-info "Version 1.0"
 write-log-info "=========================================="
 
 # Log execution parameters
-write-log-info "Execution Mode: $(if ($whatif) { 'DRY RUN (WhatIf)' } else { 'INSTALL' })"
+write-log-info "Execution Mode: $(if ($WhatIfPreference) { 'DRY RUN (WhatIf)' } else { 'INSTALL' })"
 
 if ($stacks) {
     write-log-info "Stacks requested: $($stacks -join ', ')"
@@ -249,7 +248,7 @@ write-log-info ""
 $INSTALL_RESULT = install-packages `
     -packages $ALL_PACKAGES `
     -force:$force_installs `
-    -whatif:$whatif `
+    -whatif:$WhatIfPreference `
     -latest_everything:$latest_everything
 
 write-log-info ""
@@ -272,7 +271,7 @@ else {
 write-log-info ""
 
 # Provide next steps guidance
-if (-not $whatif) {
+if (-not $WhatIfPreference) {
     write-log-info "=========================================="
     write-log-info "Next Steps"
     write-log-info "=========================================="
@@ -303,7 +302,7 @@ write-log-success "Script execution completed!"
 write-log-info "=========================================="
 
 # Exit with appropriate code
-if ($INSTALL_RESULT.failure_count -gt 0 -and -not $whatif) {
+if ($INSTALL_RESULT.failure_count -gt 0 -and -not $WhatIfPreference) {
     exit 1
 }
 else {
