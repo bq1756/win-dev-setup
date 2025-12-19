@@ -201,6 +201,8 @@ else {
     # Use default configs based on stack selection
     $DEFAULT_CONFIGS_DIR = Join-Path $SCRIPT_DIR "configs\defaults"
     
+    Write-LogInfo "Default config directory: $DEFAULT_CONFIGS_DIR"
+    
     if (-not (Test-Path $DEFAULT_CONFIGS_DIR)) {
         Write-LogError "Default configurations directory not found: $DEFAULT_CONFIGS_DIR"
         Write-LogInfo "Expected location: configs/defaults/"
