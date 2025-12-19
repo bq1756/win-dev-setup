@@ -38,15 +38,15 @@ function ensure_yaml_module {
     $YAML_MODULE = Get-Module -ListAvailable -Name "powershell-yaml"
     
     if (-not $YAML_MODULE) {
-        write_log_info "PowerShell-Yaml module not found. Installing..."
+        Write-LogInfo "PowerShell-Yaml module not found. Installing..."
         
         try {
             # Install from PowerShell Gallery
             Install-Module -Name powershell-yaml -Scope CurrentUser -Force -ErrorAction Stop
-            write_log_success "PowerShell-Yaml module installed successfully"
+            Write-LogSuccess "PowerShell-Yaml module installed successfully"
         }
         catch {
-            write_log_error "Failed to install PowerShell-Yaml module: $_"
+            Write-LogError "Failed to install PowerShell-Yaml module: $_"
             throw
         }
     }
@@ -79,14 +79,14 @@ function load_yaml_config {
         [string]$config_path
     )
     
-    write_log_info "Loading configuration file: $config_path"
+    Write-LogInfo "Loading configuration file: $config_path"
     
     # Ensure YAML module is available
     ensure_yaml_module
     
     # Check if file exists
     if (-not (Test-Path -Path $config_path)) {
-        write_log_error "Configuration file not found: $config_path"
+        Write-LogError "Configuration file not found: $config_path"
         throw "Configuration file not found: $config_path"
     }
     
@@ -106,12 +106,12 @@ function load_yaml_config {
             throw "Configuration file missing 'packages' section"
         }
         
-        write_log_success "Configuration loaded successfully: $($CONFIG.packages.Count) packages found"
+        Write-LogSuccess "Configuration loaded successfully: $($CONFIG.packages.Count) packages found"
         
         return $CONFIG
     }
     catch {
-        write_log_error "Failed to load configuration file: $_"
+        Write-LogError "Failed to load configuration file: $_"
         throw
     }
 }
@@ -146,7 +146,7 @@ function validate_package_config {
     
     foreach ($FIELD in $REQUIRED_FIELDS) {
         if (-not $package.PSObject.Properties.Name.Contains($FIELD)) {
-            write_log_warning "Package configuration missing required field '$FIELD': $($package | ConvertTo-Json -Compress)"
+            Write-LogWarning "Package configuration missing required field '$FIELD': $($package | ConvertTo-Json -Compress)"
             return $false
         }
     }
@@ -154,13 +154,13 @@ function validate_package_config {
     # Validate package manager value
     $VALID_PKGMGRS = @('winget', 'choco', 'pwsh', 'vscode', 'apt')
     if ($package.pkgmgr -notin $VALID_PKGMGRS) {
-        write_log_warning "Invalid package manager '$($package.pkgmgr)' for package '$($package.name)'. Valid options: $($VALID_PKGMGRS -join ', ')"
+        Write-LogWarning "Invalid package manager '$($package.pkgmgr)' for package '$($package.name)'. Valid options: $($VALID_PKGMGRS -join ', ')"
         return $false
     }
     
     # Validate install field is boolean
     if ($package.install -isnot [bool]) {
-        write_log_warning "Package '$($package.name)' has invalid 'install' value. Must be true or false."
+        Write-LogWarning "Package '$($package.name)' has invalid 'install' value. Must be true or false."
         return $false
     }
     
@@ -196,7 +196,7 @@ function get_enabled_packages {
     foreach ($PACKAGE in $config.packages) {
         # Validate package configuration
         if (-not (validate_package_config -package $PACKAGE)) {
-            write_log_warning "Skipping invalid package configuration"
+            Write-LogWarning "Skipping invalid package configuration"
             continue
         }
         
@@ -205,11 +205,11 @@ function get_enabled_packages {
             $ENABLED_PACKAGES += $PACKAGE
         }
         else {
-            write_log_info "Package disabled in config: $($PACKAGE.name)"
+            Write-LogInfo "Package disabled in config: $($PACKAGE.name)"
         }
     }
     
-    write_log_info "Found $($ENABLED_PACKAGES.Count) enabled packages out of $($config.packages.Count) total"
+    Write-LogInfo "Found $($ENABLED_PACKAGES.Count) enabled packages out of $($config.packages.Count) total"
     
     return $ENABLED_PACKAGES
 }
@@ -247,11 +247,11 @@ function load_configs_from_directory {
         [string[]]$stack_names
     )
     
-    write_log_info "Loading configurations from directory: $config_dir"
+    Write-LogInfo "Loading configurations from directory: $config_dir"
     
     # Check if directory exists
     if (-not (Test-Path -Path $config_dir)) {
-        write_log_error "Configuration directory not found: $config_dir"
+        Write-LogError "Configuration directory not found: $config_dir"
         throw "Configuration directory not found: $config_dir"
     }
     
@@ -259,7 +259,7 @@ function load_configs_from_directory {
     $YAML_FILES = Get-ChildItem -Path $config_dir -Filter "*.yaml" -File
     
     if ($YAML_FILES.Count -eq 0) {
-        write_log_warning "No YAML files found in directory: $config_dir"
+        Write-LogWarning "No YAML files found in directory: $config_dir"
         return @()
     }
     
@@ -270,7 +270,7 @@ function load_configs_from_directory {
         if ($stack_names) {
             $FILE_BASE_NAME = [System.IO.Path]::GetFileNameWithoutExtension($FILE.Name)
             if ($FILE_BASE_NAME -notin $stack_names) {
-                write_log_info "Skipping config file (not in requested stacks): $($FILE.Name)"
+                Write-LogInfo "Skipping config file (not in requested stacks): $($FILE.Name)"
                 continue
             }
         }
@@ -285,12 +285,12 @@ function load_configs_from_directory {
             $CONFIGS += $CONFIG
         }
         catch {
-            write_log_error "Failed to load configuration file '$($FILE.Name)': $_"
+            Write-LogError "Failed to load configuration file '$($FILE.Name)': $_"
             # Continue with other files even if one fails
         }
     }
     
-    write_log_info "Successfully loaded $($CONFIGS.Count) configuration files"
+    Write-LogInfo "Successfully loaded $($CONFIGS.Count) configuration files"
     
     return $CONFIGS
 }

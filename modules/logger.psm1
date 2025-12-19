@@ -39,7 +39,7 @@ $script:QUIET_MODE = $false
 .EXAMPLE
     initialize-logger -quiet
 #>
-function initialize_logger {
+function Initialize-Logger {
     [CmdletBinding()]
     param(
         [switch]$quiet
@@ -77,9 +77,9 @@ Started: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
     The message to log.
 
 .EXAMPLE
-    write_log_info "Starting installation process..."
+    Write-LogInfo "Starting installation process..."
 #>
-function write_log_info {
+function Write-LogInfo {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -106,9 +106,9 @@ function write_log_info {
     The message to log.
 
 .EXAMPLE
-    write_log_success "Package installed successfully: git"
+    Write-LogSuccess "Package installed successfully: git"
 #>
-function write_log_success {
+function Write-LogSuccess {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -135,9 +135,9 @@ function write_log_success {
     The message to log.
 
 .EXAMPLE
-    write_log_warning "Package not found in winget, trying chocolatey..."
+    Write-LogWarning "Package not found in winget, trying chocolatey..."
 #>
-function write_log_warning {
+function Write-LogWarning {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -164,9 +164,9 @@ function write_log_warning {
     The message to log.
 
 .EXAMPLE
-    write_log_error "Failed to install package: dotnet-sdk"
+    Write-LogError "Failed to install package: dotnet-sdk"
 #>
-function write_log_error {
+function Write-LogError {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -206,7 +206,7 @@ function write_log_error {
 .EXAMPLE
     write-log-package "git" "2.43.0" "Installing" "winget"
 #>
-function write_log_package {
+function Write-LogPackage {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -258,19 +258,10 @@ function write_log_package {
 .EXAMPLE
     $LOG_PATH = get-log-path
 #>
-function get_log_path {
+function Get-LogPath {
     return $script:LOG_FILE_PATH
 }
 
-# PowerShell-compliant wrapper functions (Verb-Noun naming with hyphens)
-function Initialize-Logger { param([switch]$quiet) initialize_logger -quiet:$quiet }
-function Write-LogInfo { param([string]$message) write_log_info $message }
-function Write-LogSuccess { param([string]$message) write_log_success $message }
-function Write-LogWarning { param([string]$message) write_log_warning $message }
-function Write-LogError { param([string]$message) write_log_error $message }
-function Write-LogPackage { param([string]$pkgmgr, [string]$package_name, [string]$status) write_log_package -pkgmgr $pkgmgr -package_name $package_name -status $status }
-function Get-LogPath { get_log_path }
-
-# Export wrapper functions (PowerShell naming convention compliant)
+# Export all functions  
 Export-ModuleMember -Function Initialize-Logger, Write-LogInfo, Write-LogSuccess, Write-LogWarning, Write-LogError, Write-LogPackage, Get-LogPath
 

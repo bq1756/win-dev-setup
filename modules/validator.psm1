@@ -41,10 +41,10 @@ function test_is_admin {
     $IS_ADMIN = $CURRENT_PRINCIPAL.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     
     if ($IS_ADMIN) {
-        write_log_info "Running with administrator privileges"
+        Write-LogInfo "Running with administrator privileges"
     }
     else {
-        write_log_warning "NOT running with administrator privileges"
+        Write-LogWarning "NOT running with administrator privileges"
     }
     
     return $IS_ADMIN
@@ -70,22 +70,22 @@ function test_execution_policy {
     
     $CURRENT_POLICY = Get-ExecutionPolicy
     
-    write_log_info "Current execution policy: $CURRENT_POLICY"
+    Write-LogInfo "Current execution policy: $CURRENT_POLICY"
     
     # Acceptable policies: Unrestricted, RemoteSigned, Bypass
     # Not acceptable: Restricted, AllSigned (for automation purposes)
     $ACCEPTABLE_POLICIES = @('Unrestricted', 'RemoteSigned', 'Bypass', 'Undefined')
     
     if ($CURRENT_POLICY -in $ACCEPTABLE_POLICIES) {
-        write_log_success "Execution policy is acceptable for script execution"
+        Write-LogSuccess "Execution policy is acceptable for script execution"
         return $true
     }
     else {
-        write_log_error "Execution policy is too restrictive: $CURRENT_POLICY"
-        write_log_info "To fix this, run PowerShell as Administrator and execute:"
-        write_log_info "    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser"
-        write_log_info "Or for system-wide (requires admin):"
-        write_log_info "    Set-ExecutionPolicy RemoteSigned -Scope LocalMachine"
+        Write-LogError "Execution policy is too restrictive: $CURRENT_POLICY"
+        Write-LogInfo "To fix this, run PowerShell as Administrator and execute:"
+        Write-LogInfo "    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser"
+        Write-LogInfo "Or for system-wide (requires admin):"
+        Write-LogInfo "    Set-ExecutionPolicy RemoteSigned -Scope LocalMachine"
         return $false
     }
 }
@@ -113,7 +113,7 @@ function test_windows_version {
     $OS_VERSION = $OS_INFO.Version
     $OS_CAPTION = $OS_INFO.Caption
     
-    write_log_info "Operating System: $OS_CAPTION (Version: $OS_VERSION)"
+    Write-LogInfo "Operating System: $OS_CAPTION (Version: $OS_VERSION)"
     
     # Parse version (format: Major.Minor.Build.Revision)
     $VERSION_PARTS = $OS_VERSION.Split('.')
@@ -126,16 +126,16 @@ function test_windows_version {
     if ($MAJOR_VERSION -ge 10) {
         # Check if build is recent enough (Windows 10 2004 or later)
         if ($BUILD_NUMBER -ge 19041) {
-            write_log_success "Windows version is supported"
+            Write-LogSuccess "Windows version is supported"
             return $true
         }
         else {
-            write_log_warning "Windows 10 build is too old. Build 19041+ recommended (Windows 10 2004+)"
+            Write-LogWarning "Windows 10 build is too old. Build 19041+ recommended (Windows 10 2004+)"
             return $false
         }
     }
     else {
-        write_log_error "Unsupported Windows version. Windows 10 or 11 required."
+        Write-LogError "Unsupported Windows version. Windows 10 or 11 required."
         return $false
     }
 }
@@ -168,11 +168,11 @@ function test_command_exists {
     $COMMAND = Get-Command $command_name -ErrorAction SilentlyContinue
     
     if ($COMMAND) {
-        write_log_info "Command found: $command_name (Path: $($COMMAND.Source))"
+        Write-LogInfo "Command found: $command_name (Path: $($COMMAND.Source))"
         return $true
     }
     else {
-        write_log_info "Command not found: $command_name"
+        Write-LogInfo "Command not found: $command_name"
         return $false
     }
 }
@@ -195,14 +195,14 @@ function test_winget_available {
     [CmdletBinding()]
     param()
     
-    write_log_info "Checking for winget (Windows Package Manager)..."
+    Write-LogInfo "Checking for winget (Windows Package Manager)..."
     
     # Try to run winget --version
     try {
         $WINGET_VERSION = & winget --version 2>$null
         
         if ($LASTEXITCODE -eq 0) {
-            write_log_success "Winget is available: $WINGET_VERSION"
+            Write-LogSuccess "Winget is available: $WINGET_VERSION"
             return $true
         }
     }
@@ -210,9 +210,9 @@ function test_winget_available {
         # Command not found
     }
     
-    write_log_warning "Winget is not available on this system"
-    write_log_info "Winget comes pre-installed on Windows 11 and recent Windows 10 updates"
-    write_log_info "Install from: https://aka.ms/getwinget"
+    Write-LogWarning "Winget is not available on this system"
+    Write-LogInfo "Winget comes pre-installed on Windows 11 and recent Windows 10 updates"
+    Write-LogInfo "Install from: https://aka.ms/getwinget"
     
     return $false
 }
@@ -234,7 +234,7 @@ function test_wsl_installed {
     [CmdletBinding()]
     param()
     
-    write_log_info "Checking for WSL (Windows Subsystem for Linux)..."
+    Write-LogInfo "Checking for WSL (Windows Subsystem for Linux)..."
     
     # Check if wsl command exists
     if (test_command_exists "wsl") {
@@ -243,17 +243,17 @@ function test_wsl_installed {
             $null = & wsl --status 2>&1
             
             if ($LASTEXITCODE -eq 0) {
-                write_log_success "WSL is installed and functional"
+                Write-LogSuccess "WSL is installed and functional"
                 return $true
             }
         }
         catch {
-            write_log_warning "WSL command found but not functional"
+            Write-LogWarning "WSL command found but not functional"
             return $false
         }
     }
     
-    write_log_info "WSL is not installed"
+    Write-LogInfo "WSL is not installed"
     return $false
 }
 
@@ -280,9 +280,9 @@ function invoke_prerequisite_validation {
         [switch]$require_admin
     )
     
-    write_log_info "=========================================="
-    write_log_info "Running prerequisite validation checks..."
-    write_log_info "=========================================="
+    Write-LogInfo "=========================================="
+    Write-LogInfo "Running prerequisite validation checks..."
+    Write-LogInfo "=========================================="
     
     $ALL_PASSED = $true
     
@@ -299,25 +299,25 @@ function invoke_prerequisite_validation {
     # Check admin privileges
     $IS_ADMIN = test_is_admin
     if ($require_admin -and -not $IS_ADMIN) {
-        write_log_error "Administrator privileges are required for this operation"
-        write_log_info "Please run PowerShell as Administrator and try again"
+        Write-LogError "Administrator privileges are required for this operation"
+        Write-LogInfo "Please run PowerShell as Administrator and try again"
         $ALL_PASSED = $false
     }
     elseif (-not $IS_ADMIN) {
-        write_log_warning "Some installations may require administrator privileges"
-        write_log_info "Consider re-running as Administrator if installations fail"
+        Write-LogWarning "Some installations may require administrator privileges"
+        Write-LogInfo "Consider re-running as Administrator if installations fail"
     }
     
     # Check for winget (informational - not critical)
     test_winget_available | Out-Null
     
-    write_log_info "=========================================="
+    Write-LogInfo "=========================================="
     
     if ($ALL_PASSED) {
-        write_log_success "All prerequisite validations passed"
+        Write-LogSuccess "All prerequisite validations passed"
     }
     else {
-        write_log_error "One or more prerequisite validations failed"
+        Write-LogError "One or more prerequisite validations failed"
     }
     
     return $ALL_PASSED
