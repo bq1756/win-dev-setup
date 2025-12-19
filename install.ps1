@@ -116,6 +116,16 @@ try {
     
     Import-Module (Join-Path $MODULES_DIR "package-manager.psm1") -Force -ErrorAction Stop
     Write-Host "Loaded package-manager.psm1" -ForegroundColor Green
+    
+    # Debug: Check if functions are available
+    $testFunc = Get-Command initialize_logger -ErrorAction SilentlyContinue
+    if ($testFunc) {
+        Write-Host "DEBUG: initialize_logger IS available" -ForegroundColor Yellow
+    } else {
+        Write-Host "DEBUG: initialize_logger NOT available" -ForegroundColor Red
+        Write-Host "Available commands from logger:" -ForegroundColor Red
+        Get-Command -Module logger | ForEach-Object { Write-Host "  - $($_.Name)" -ForegroundColor Red }
+    }
 }
 catch {
     Write-Host "ERROR: Failed to import modules: $_" -ForegroundColor Red
