@@ -105,17 +105,17 @@ $MODULES_DIR = Join-Path $SCRIPT_DIR "modules"
 Write-Host "Importing modules from: $MODULES_DIR" -ForegroundColor Cyan
 
 try {
-    Import-Module (Join-Path $MODULES_DIR "logger.psm1") -Force -Global -ErrorAction Stop
-    Write-Host "✓ Loaded logger.psm1" -ForegroundColor Green
+    Import-Module (Join-Path $MODULES_DIR "logger.psm1") -Force -ErrorAction Stop
+    Write-Host "Loaded logger.psm1" -ForegroundColor Green
     
-    Import-Module (Join-Path $MODULES_DIR "validator.psm1") -Force -Global -ErrorAction Stop
-    Write-Host "✓ Loaded validator.psm1" -ForegroundColor Green
+    Import-Module (Join-Path $MODULES_DIR "validator.psm1") -Force -ErrorAction Stop
+    Write-Host "Loaded validator.psm1" -ForegroundColor Green
     
-    Import-Module (Join-Path $MODULES_DIR "config-loader.psm1") -Force -Global -ErrorAction Stop
-    Write-Host "✓ Loaded config-loader.psm1" -ForegroundColor Green
+    Import-Module (Join-Path $MODULES_DIR "config-loader.psm1") -Force -ErrorAction Stop
+    Write-Host "Loaded config-loader.psm1" -ForegroundColor Green
     
-    Import-Module (Join-Path $MODULES_DIR "package-manager.psm1") -Force -Global -ErrorAction Stop
-    Write-Host "✓ Loaded package-manager.psm1" -ForegroundColor Green
+    Import-Module (Join-Path $MODULES_DIR "package-manager.psm1") -Force -ErrorAction Stop
+    Write-Host "Loaded package-manager.psm1" -ForegroundColor Green
 }
 catch {
     Write-Host "ERROR: Failed to import modules: $_" -ForegroundColor Red
