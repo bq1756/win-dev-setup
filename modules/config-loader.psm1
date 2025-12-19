@@ -295,12 +295,5 @@ function load_configs_from_directory {
     return $CONFIGS
 }
 
-# Export module functions
-Export-ModuleMember -Function @(
-    'ensure_yaml_module',
-    'load_yaml_config',
-    'validate_package_config',
-    'get_enabled_packages',
-    'load_configs_from_directory'
-)
+# Functions are available via dot-sourcing
 

@@ -262,14 +262,5 @@ function get_log_path {
     return $script:LOG_FILE_PATH
 }
 
-# Export module functions
-Export-ModuleMember -Function @(
-    'initialize_logger',
-    'write_log_info',
-    'write_log_success',
-    'write_log_warning',
-    'write_log_error',
-    'write_log_package',
-    'get_log_path'
-)
+# Functions are available via dot-sourcing
 

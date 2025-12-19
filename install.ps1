@@ -99,13 +99,13 @@ param(
 # Get script directory for relative path resolution
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# Import all required modules
+# Dot-source all required modules (using dot-sourcing instead of Import-Module for underscore function names)
 $MODULES_DIR = Join-Path $SCRIPT_DIR "modules"
 
-Import-Module (Join-Path $MODULES_DIR "logger.psm1") -Force -ErrorAction Stop -Verbose
-Import-Module (Join-Path $MODULES_DIR "validator.psm1") -Force -ErrorAction Stop
-Import-Module (Join-Path $MODULES_DIR "config-loader.psm1") -Force -ErrorAction Stop
-Import-Module (Join-Path $MODULES_DIR "package-manager.psm1") -Force -ErrorAction Stop
+. (Join-Path $MODULES_DIR "logger.psm1")
+. (Join-Path $MODULES_DIR "validator.psm1")
+. (Join-Path $MODULES_DIR "config-loader.psm1")
+. (Join-Path $MODULES_DIR "package-manager.psm1")
 
 # Initialize logging system
 initialize_logger -quiet:$quiet
