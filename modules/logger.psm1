@@ -262,6 +262,5 @@ function Get-LogPath {
     return $script:LOG_FILE_PATH
 }
 
-# Export all functions  
-Export-ModuleMember -Function Initialize-Logger, Write-LogInfo, Write-LogSuccess, Write-LogWarning, Write-LogError, Write-LogPackage, Get-LogPath
+# All functions auto-exported (no Export-ModuleMember needed)
 

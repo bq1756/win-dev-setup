@@ -296,5 +296,5 @@ function load_configs_from_directory {
 }
 
 # Export all functions
-Export-ModuleMember -Function ensure_yaml_module, load_yaml_config, validate_package_config, get_enabled_packages, load_configs_from_directory
+# All functions auto-exported
 

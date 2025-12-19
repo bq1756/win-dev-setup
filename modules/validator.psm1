@@ -324,5 +324,5 @@ function invoke_prerequisite_validation {
 }
 
 # Export all functions
-Export-ModuleMember -Function test_is_admin, test_execution_policy, test_windows_version, test_command_exists, test_winget_available, test_wsl_installed, invoke_prerequisite_validation
+# All functions auto-exported
 

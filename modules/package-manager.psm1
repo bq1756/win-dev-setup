@@ -593,5 +593,5 @@ function install_packages {
 }
 
 # Export all functions
-Export-ModuleMember -Function ensure_chocolatey_installed, install_package_winget, install_package_choco, install_package_pwsh, install_package_vscode, install_package, install_packages
+# All functions auto-exported
 
