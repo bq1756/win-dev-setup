@@ -474,7 +474,11 @@ function Install-Package {
             # If winget fails and we're not in whatif mode, try chocolatey as fallback
             if (-not $SUCCESS -and -not $whatif) {
                 Write-LogWarning "Winget installation failed for '$($package.name)', trying Chocolatey as fallback..."
-                $SUCCESS = Install-PackageChoco -package_name $package.name -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
+                
+                # Use choco_name if available, otherwise use name
+                $CHOCO_PKG_NAME = if ($package.choco_name) { $package.choco_name } else { $package.name }
+                
+                $SUCCESS = Install-PackageChoco -package_name $CHOCO_PKG_NAME -version $VERSION_TO_INSTALL -force:$force -whatif:$whatif
             }
             
             return $SUCCESS

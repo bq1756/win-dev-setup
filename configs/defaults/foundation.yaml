@@ -5,6 +5,7 @@
 packages:
   # Version control
   - name: Git.Git
+    choco_name: git
     install: true
     version: latest
     pkgmgr: winget
@@ -12,6 +13,7 @@ packages:
 
   # Code editor
   - name: Microsoft.VisualStudioCode
+    choco_name: vscode
     install: true
     version: latest
     pkgmgr: winget
@@ -38,6 +40,7 @@ packages:
 
   # Modern terminal
   - name: Microsoft.WindowsTerminal
+    choco_name: microsoft-windows-terminal
     install: true
     version: latest
     pkgmgr: winget
@@ -45,6 +48,7 @@ packages:
 
   # PowerShell 7+
   - name: Microsoft.PowerShell
+    choco_name: powershell-core
     install: true
     version: latest
     pkgmgr: winget
@@ -63,13 +67,15 @@ packages:
     pkgmgr: pwsh
     description: "Git integration for PowerShell prompt"
 
-  # File comparison and merge tool
-  - name: WinMerge.WinMerge
+  # choco_name: winmerge
     install: true
     version: latest
     pkgmgr: winget
     description: "File and folder comparison tool"
 
+  # Archive utilities
+  - name: 7zip.7zip
+    choco_name: 
   # Archive utilities
   - name: 7zip.7zip
     install: true
