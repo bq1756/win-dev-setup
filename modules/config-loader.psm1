@@ -164,7 +164,7 @@ function Test-PackageConfig {
     $REQUIRED_FIELDS = @('name', 'install', 'pkgmgr')
     
     foreach ($FIELD in $REQUIRED_FIELDS) {
-        if (-not $package.PSObject.Properties.Name.Contains($FIELD)) {
+        if (-not ($package.PSObject.Properties.Name -contains $FIELD)) {
             Write-LogWarning "Package configuration missing required field '$FIELD': $($package | ConvertTo-Json -Compress)"
             return $false
         }
