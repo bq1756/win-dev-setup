@@ -61,7 +61,7 @@ Started: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 
 "@
     
-    $HEADER | Out-File -FilePath $script:LOG_FILE_PATH -Encoding UTF8
+    if ($script:LOG_FILE_PATH) { $HEADER | Out-File -FilePath $script:LOG_FILE_PATH -Encoding UTF8 }
     
     # Only show message if not in quiet mode
     if (-not $script:QUIET_MODE) {
@@ -90,8 +90,10 @@ function Write-LogInfo {
     $TIMESTAMP = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $LOG_ENTRY = "[$TIMESTAMP] [INFO] $message"
     
-    # Always write to log file
-    $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8
+    # Always write to log file (if initialized)
+    if ($script:LOG_FILE_PATH) {
+        if ($script:LOG_FILE_PATH) { $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8 }
+    }
     
     # Write to console unless in quiet mode
     if (-not $script:QUIET_MODE) {
@@ -120,7 +122,7 @@ function Write-LogSuccess {
     $LOG_ENTRY = "[$TIMESTAMP] [SUCCESS] $message"
     
     # Always write to log file
-    $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8
+    if ($script:LOG_FILE_PATH) { $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8 }
     
     # Write to console unless in quiet mode
     if (-not $script:QUIET_MODE) {
@@ -149,7 +151,7 @@ function Write-LogWarning {
     $LOG_ENTRY = "[$TIMESTAMP] [WARNING] $message"
     
     # Always write to log file
-    $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8
+    if ($script:LOG_FILE_PATH) { $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8 }
     
     # Write to console unless in quiet mode
     if (-not $script:QUIET_MODE) {
@@ -178,7 +180,7 @@ function Write-LogError {
     $LOG_ENTRY = "[$TIMESTAMP] [ERROR] $message"
     
     # Always write to log file
-    $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8
+    if ($script:LOG_FILE_PATH) { $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8 }
     
     # Always write errors to console, even in quiet mode
     Write-Host "[ERROR] $message" -ForegroundColor Red
@@ -231,7 +233,7 @@ function Write-LogPackage {
     $LOG_ENTRY = "[$TIMESTAMP] [PACKAGE] $message"
     
     # Always write to log file
-    $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8
+    if ($script:LOG_FILE_PATH) { $LOG_ENTRY | Out-File -FilePath $script:LOG_FILE_PATH -Append -Encoding UTF8 }
     
     # Write to console unless in quiet mode
     if (-not $script:QUIET_MODE) {
