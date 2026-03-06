@@ -3,11 +3,11 @@
 
 packages:
   # Python interpreter
-  - name: Python.Python.3.12
+  - name: Python.Python.3.14
     install: true
     version: latest
     pkgmgr: winget
-    description: "Python 3.12"
+    description: "Python 3.14"
 
   # VS Code extensions for Python
   - name: ms-python.python
@@ -42,14 +42,16 @@ packages:
     pkgmgr: winget
     description: "PyCharm Community Edition IDE"
 
-  # Python linting and formatting tools (via pip)
-  # Note: These would typically be installed per-project or in virtual environments
-  # Disabled by default as they're better managed via requirements.txt
-  
-  # Alternative: Install common Python tools globally via PowerShell
-  # Uncomment if you want global installations
-  # - name: black
-  #   install: false
-  #   version: latest
-  #   pkgmgr: choco
-  #   description: "Python code formatter"
+  # Linting and formatting
+  - name: charliermarsh.ruff
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Ruff - fast Python linter and formatter (replaces black/flake8)"
+
+  # Static type checking
+  - name: ms-python.mypy-type-checker
+    install: true
+    version: latest
+    pkgmgr: vscode
+    description: "Mypy type checker for Python"
