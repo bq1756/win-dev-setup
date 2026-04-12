@@ -30,7 +30,7 @@ packages:
 
   # Jupyter support
   - name: ms-toolsai.jupyter
-    install: true
+    install: false
     version: latest
     pkgmgr: vscode
     description: "Jupyter notebook support"
@@ -44,14 +44,14 @@ packages:
 
   # Linting and formatting
   - name: charliermarsh.ruff
-    install: true
+    install: false
     version: latest
     pkgmgr: vscode
     description: "Ruff - fast Python linter and formatter (replaces black/flake8)"
 
   # Static type checking
   - name: ms-python.mypy-type-checker
-    install: true
+    install: false
     version: latest
     pkgmgr: vscode
     description: "Mypy type checker for Python"
