@@ -41,7 +41,7 @@ packages:
   # Modern terminal
   - name: Microsoft.WindowsTerminal
     choco_name: microsoft-windows-terminal
-    install: true
+    install: false
     version: latest
     pkgmgr: winget
     description: "Windows Terminal"
