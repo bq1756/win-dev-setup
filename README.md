@@ -15,6 +15,11 @@ Automated Windows development environment bootstrapping tool using PowerShell an
 
 ## Quick Start
 
+### Ensure you can run PowerShell scripts as administration on your systems
+```powershell
+Set-ExecutionPolicy Unrestricted -Scope CurrentUser
+```
+
 ### Option 1: Bootstrap from Scratch
 
 If you're starting fresh and don't have Git installed:
