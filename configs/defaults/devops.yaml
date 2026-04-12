@@ -18,7 +18,7 @@ packages:
 
   # Terraform (Infrastructure as Code)
   - name: Hashicorp.Terraform
-    install: true
+    install: false
     version: latest
     pkgmgr: winget
     description: "Terraform infrastructure provisioning tool"
@@ -59,7 +59,7 @@ packages:
     description: "Azure Pipelines support"
 
   - name: hashicorp.terraform
-    install: true
+    install: false
     version: latest
     pkgmgr: vscode
     description: "Terraform language support"
@@ -92,7 +92,7 @@ packages:
 
   # Postman (API testing)
   - name: Postman.Postman
-    install: true
+    install: false
     version: latest
     pkgmgr: winget
     description: "Postman API development platform"
