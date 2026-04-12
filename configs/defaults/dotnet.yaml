@@ -4,14 +4,14 @@
 packages:
   # .NET SDK (includes runtime)
   - name: Microsoft.DotNet.SDK.8
-    install: true
+    install: false
     version: latest
     pkgmgr: winget
     description: ".NET 8 SDK (LTS)"
 
-  # .NET 6 SDK (previous LTS - optional)
-  - name: Microsoft.DotNet.SDK.6
-    install: false
+  # .NET 10 SDK
+  - name: Microsoft.DotNet.SDK.10
+    install: true
     version: latest
     pkgmgr: winget
     description: ".NET 6 SDK (LTS)"
@@ -55,7 +55,7 @@ packages:
   
   # ASP.NET Core development
   - name: ms-azuretools.vscode-azurefunctions
-    install: false
+    install: true
     version: latest
     pkgmgr: vscode
     description: "Azure Functions support (for serverless .NET)"
